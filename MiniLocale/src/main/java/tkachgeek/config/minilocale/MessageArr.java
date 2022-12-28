@@ -20,20 +20,20 @@ public class MessageArr {
   
   public void send(Audience audience) {
     for (String line : message) {
-      audience.sendMessage(MiniMessage.miniMessage().deserialize(line));
+      audience.sendMessage(MiniMessage.get().deserialize(line));
     }
   }
   
   public void send(Audience audience, Placeholders placeholders) {
     for (String line : message) {
-      audience.sendMessage(MiniMessage.miniMessage().deserialize(line, placeholders.getResolvers()));
+      audience.sendMessage(MiniMessage.get().parse(line, placeholders.getResolvers()));
     }
   }
   
   public Collection<Component> get() {
     List<Component> list = new ArrayList<>();
     for (String line : message) {
-      list.add(MiniMessage.miniMessage().deserialize(line));
+      list.add(MiniMessage.get().deserialize(line));
     }
     return list;
   }
@@ -41,7 +41,7 @@ public class MessageArr {
   public Collection<Component> get(Placeholders placeholders) {
     List<Component> list = new ArrayList<>();
     for (String line : message) {
-      list.add(MiniMessage.miniMessage().deserialize(line, placeholders.getResolvers()));
+      list.add(MiniMessage.get().parse(line, placeholders.getResolvers()));
     }
     return list;
   }

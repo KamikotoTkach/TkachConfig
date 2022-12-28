@@ -26,10 +26,10 @@ public class Message {
       case MINI_MESSAGE:
         break;
       case LEGACY_AMPERSAND:
-        this.message = MiniMessage.miniMessage().serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(message)).replaceAll("\\\\", "");
+        this.message = MiniMessage.get().serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(message)).replaceAll("\\\\", "");
         break;
       case LEGACY_SECTION:
-        this.message = MiniMessage.miniMessage().serialize(LegacyComponentSerializer.legacySection().deserialize(message)).replaceAll("\\\\", "");
+        this.message = MiniMessage.get().serialize(LegacyComponentSerializer.legacySection().deserialize(message)).replaceAll("\\\\", "");
         break;
     }
   }
@@ -73,19 +73,19 @@ public class Message {
   }
   
   public Component get() {
-    return MiniMessage.miniMessage().deserialize(message);
+    return MiniMessage.get().deserialize(message);
   }
   
   public Component get(Placeholders placeholders) {
-    return MiniMessage.miniMessage().deserialize(message, placeholders.getResolvers());
+    return MiniMessage.get().parse(message, placeholders.getResolvers());
   }
   
   public void throwback() throws MessageReturn {
-    throw new MessageReturn(MiniMessage.miniMessage().deserialize(message));
+    throw new MessageReturn(MiniMessage.get().deserialize(message));
   }
   
   public void throwback(Placeholders placeholders) throws MessageReturn {
-    throw new MessageReturn(MiniMessage.miniMessage().deserialize(message, placeholders.getResolvers()));
+    throw new MessageReturn(MiniMessage.get().parse(message, placeholders.getResolvers()));
   }
   
   public boolean notEmpty() {

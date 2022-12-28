@@ -28,17 +28,17 @@ public class ItemData {
   }
   @JsonIgnore
   public Component getName() {
-    return MiniMessage.miniMessage().deserialize(name);
+    return MiniMessage.get().deserialize(name);
   }
   @JsonIgnore
   public Component getName(Placeholders placeholders) {
-    return MiniMessage.miniMessage().deserialize(name, placeholders.getResolvers());
+    return MiniMessage.get().parse(name, placeholders.getResolvers());
   }
   @JsonIgnore
   public List<Component> getDescription() {
     List<Component> list = new ArrayList<>();
     for (String line : description) {
-      list.add(MiniMessage.miniMessage().deserialize(line).decoration(TextDecoration.ITALIC, false));
+      list.add(MiniMessage.get().deserialize(line).decoration(TextDecoration.ITALIC, false));
     }
     return list;
   }
@@ -46,7 +46,7 @@ public class ItemData {
   public List<Component> getDescription(Placeholders placeholders) {
     List<Component> list = new ArrayList<>();
     for (String line : description) {
-      list.add(MiniMessage.miniMessage().deserialize(line, placeholders.getResolvers()));
+      list.add(MiniMessage.get().parse(line, placeholders.getResolvers()));
     }
     return list;
   }
