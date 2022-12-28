@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemData {
-  @JsonProperty("материал")
+  @JsonProperty("material")
   public Material material;
-  @JsonProperty("название")
+  @JsonProperty("name")
   String name;
-  @JsonProperty("описание")
+  @JsonProperty("description")
   String[] description;
   
   public ItemData() {

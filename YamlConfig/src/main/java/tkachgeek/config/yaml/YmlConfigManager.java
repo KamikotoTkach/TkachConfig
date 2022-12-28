@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -71,7 +70,7 @@ public class YmlConfigManager {
     long startTime = System.currentTimeMillis();
     
     Logger.getLogger(plugin.getName()).log(Level.INFO, "");
-    Logger.getLogger(plugin.getName()).log(Level.INFO, "Чтение конфига " + path + ".yml");
+    Logger.getLogger(plugin.getName()).log(Level.INFO, "Reading config " + path + ".yml");
     
     T config = null;
     String yaml = "";
@@ -79,33 +78,33 @@ public class YmlConfigManager {
       yaml = Utils.readString(getPath(path));
       
       if (yaml.length() == 0) {
-        Logger.getLogger(plugin.getName()).log(Level.INFO, "Файл не найден, будет использован дефолтный");
+        Logger.getLogger(plugin.getName()).log(Level.INFO, "File not found, default file will be used");
         config = Utils.getNewInstance(type);
       } else {
         config = mapper.readValue(yaml, type);
       }
     } catch (IOException e) {
-      Logger.getLogger(plugin.getName()).log(Level.WARNING, "Не удалось прочесть конфиг " + path + ".yml");
+      Logger.getLogger(plugin.getName()).log(Level.WARNING, "Unable to read the config " + path + ".yml");
       if (yaml.length() != 0) {
         String newPath = path + " " + new Timestamp(System.currentTimeMillis()).toString().replace(":", "-");
-        Logger.getLogger(plugin.getName()).log(Level.WARNING, "Файл не пустой, создана копия под именем " + newPath + ".yml");
+        Logger.getLogger(plugin.getName()).log(Level.WARNING, "The file is not empty, a copy was created under the name " + newPath + ".yml");
         Utils.writeString(getPath(newPath), yaml);
       }
       e.printStackTrace();
     }
     
     if (config == null) {
-      Logger.getLogger(plugin.getName()).log(Level.WARNING, "Создание конфига " + path + ".yml");
+      Logger.getLogger(plugin.getName()).log(Level.WARNING, "Creating a config " + path + ".yml");
       config = Utils.getNewInstance(type);
     }
     
     if (config == null) {
-      Logger.getLogger(plugin.getName()).log(Level.WARNING, "Не удалось создать конфиг " + path + ".yml (" + type.getSimpleName() + ")");
+      Logger.getLogger(plugin.getName()).log(Level.WARNING, "Failed to create a config " + path + ".yml (" + type.getSimpleName() + ")");
     } else {
       config.path = path;
       configs.put(path, config);
       long elapsed = System.currentTimeMillis() - startTime;
-      Logger.getLogger(plugin.getName()).log(Level.INFO, "Успешно загружен конфиг " + path + ".yml (заняло " + elapsed + "ms)");
+      Logger.getLogger(plugin.getName()).log(Level.INFO, "Successfully loaded the config " + path + ".yml (took " + elapsed + "ms)");
     }
     
     return config;
@@ -132,19 +131,19 @@ public class YmlConfigManager {
       long start = System.currentTimeMillis();
       if (config.saveOnDisabling) {
         Logger.getLogger(plugin.getName()).log(Level.INFO, "");
-        Logger.getLogger(plugin.getName()).log(Level.INFO, "Сохранение конфига " + config.path + ".yml");
+        Logger.getLogger(plugin.getName()).log(Level.INFO, "Saving a config " + config.path + ".yml");
         
         try {
           config.store();
         } catch (Exception e) {
-          
-          Logger.getLogger(plugin.getName()).log(Level.WARNING, "Ошибка при сохранении конфига" + config.path + ".yml");
+  
+          Logger.getLogger(plugin.getName()).log(Level.WARNING, "Error when saving the config" + config.path + ".yml");
           
           e.printStackTrace();
           continue;
         }
         long elapsed = System.currentTimeMillis() - start;
-        Logger.getLogger(plugin.getName()).log(Level.INFO, "Конфиг " + config.path + ".yml сохранён (заняло " + elapsed + "ms)");
+        Logger.getLogger(plugin.getName()).log(Level.INFO, "Config " + config.path + ".yml saved (took " + elapsed + "ms)");
       }
     }
   }
@@ -152,16 +151,16 @@ public class YmlConfigManager {
   public static void reload() {
     for (Config config : configs.values()) {
       if (config instanceof Reloadable) {
-        
-        Logger.getLogger(plugin.getName()).log(Level.INFO, "Перезагрузка конфига " + config.path + ".yml");
+  
+        Logger.getLogger(plugin.getName()).log(Level.INFO, "Reloading the config " + config.path + ".yml");
         
         try {
           ((Reloadable) config).reload();
         } catch (Exception e) {
-          Logger.getLogger(plugin.getName()).log(Level.WARNING, "Перезагрузка конфига " + config.path + ".yml не удалась: " + e.getMessage());
+          Logger.getLogger(plugin.getName()).log(Level.WARNING, "Reloading the config " + config.path + ".yml failed: " + e.getMessage());
           continue;
         }
-        Logger.getLogger(plugin.getName()).log(Level.INFO, "Перезагрузка конфига " + config.path + ".yml прошла успешно");
+        Logger.getLogger(plugin.getName()).log(Level.INFO, "Reloading the config " + config.path + ".yml was successful");
       }
     }
   }
