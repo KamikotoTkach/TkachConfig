@@ -1,0 +1,3 @@
+name: Config
+main: tkachgeek.config.base.Main
+version: 3.1

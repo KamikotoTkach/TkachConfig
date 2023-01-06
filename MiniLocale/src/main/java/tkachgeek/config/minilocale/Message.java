@@ -1,6 +1,7 @@
 package tkachgeek.config.minilocale;
 
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -32,6 +33,10 @@ public class Message {
         this.message = MiniMessage.get().serialize(LegacyComponentSerializer.legacySection().deserialize(message)).replaceAll("\\\\", "");
         break;
     }
+  }
+  
+  public Message(String message, BukkitAudiences adventure) {
+  
   }
   
   public void send(Audience audience) {
