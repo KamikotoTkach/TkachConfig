@@ -98,7 +98,7 @@ public class YmlConfigManager {
       Logger.getLogger(plugin.getName()).log(Level.WARNING, "Создание конфига " + path + ".yml");
       config = Utils.getNewInstance(type);
     }
-    
+  
     if (config == null) {
       Logger.getLogger(plugin.getName()).log(Level.WARNING, "Не удалось создать конфиг " + path + ".yml (" + type.getSimpleName() + ")");
     } else {
@@ -107,7 +107,9 @@ public class YmlConfigManager {
       long elapsed = System.currentTimeMillis() - startTime;
       Logger.getLogger(plugin.getName()).log(Level.INFO, "Успешно загружен конфиг " + path + ".yml (заняло " + elapsed + "ms)");
     }
-    
+  
+    if (config != null) config.setManager(this);
+  
     return config;
   }
   
@@ -211,7 +213,7 @@ public class YmlConfigManager {
       if (config instanceof Reloadable) {
         
         messagesOut.sendMessage("Перезагрузка конфига " + config.path + ".yml");
-        
+  
         try {
           ((Reloadable) config).reload();
         } catch (Exception e) {
@@ -220,5 +222,11 @@ public class YmlConfigManager {
         messagesOut.sendMessage("Перезагрузка конфига " + config.path + ".yml прошла успешно");
       }
     }
+  }
+  
+  public void flush(String name, CommandSender messagesOut) {
+    Utils.writeString(getPath(name), "");
+    reloadByCommand(name, messagesOut);
+    messagesOut.sendMessage("Файл " + name + ".yml очищен");
   }
 }

@@ -1,7 +1,6 @@
 package tkachgeek.config.minilocale;
 
 import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -36,9 +35,6 @@ public class Message {
     }
   }
   
-  public Message(String message, BukkitAudiences adventure) {
-  
-  }
   
   public void send(Audience audience) {
     audience.sendMessage(get());
@@ -84,6 +80,22 @@ public class Message {
   
   public Component get(Placeholders placeholders) {
     return MiniMessage.get().parse(message, placeholders.getResolvers());
+  }
+  
+  public String getLegacy() {
+    return LegacyComponentSerializer.legacyAmpersand().serialize(MiniMessage.miniMessage().deserialize(message));
+  }
+  
+  public String getLegacy(Placeholders placeholders) {
+    return LegacyComponentSerializer.legacyAmpersand().serialize(MiniMessage.miniMessage().deserialize(message, placeholders.getResolvers()));
+  }
+  
+  public String getLegacySection() {
+    return LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(message));
+  }
+  
+  public String getLegacySection(Placeholders placeholders) {
+    return LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(message, placeholders.getResolvers()));
   }
   
   public void throwback() throws MessageReturn {

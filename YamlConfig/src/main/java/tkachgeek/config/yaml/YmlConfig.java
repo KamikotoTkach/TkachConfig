@@ -3,7 +3,7 @@ package tkachgeek.config.yaml;
 import tkachgeek.config.base.Config;
 
 public abstract class YmlConfig extends Config {
-  protected YmlConfigManager manager = null;
+  transient protected YmlConfigManager manager = null;
   @Override
   public void store(String path) {
     manager.store(path, this);
@@ -19,5 +19,7 @@ public abstract class YmlConfig extends Config {
     return manager.toString(this);
   }
   
-  public abstract void load(YmlConfigManager manager);
+  public void setManager(YmlConfigManager manager) {
+    this.manager = manager;
+  }
 }

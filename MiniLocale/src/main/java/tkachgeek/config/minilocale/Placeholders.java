@@ -35,4 +35,24 @@ public class Placeholders {
     public List<Template> getResolvers() {
         return resolvers;
     }
+    
+    public Placeholders add(String key, double value) {
+        return add(key, String.valueOf(value));
+    }
+    
+    public Placeholders add(String key, int value) {
+        return add(key, String.valueOf(value));
+    }
+    
+    public Placeholders add(String key, float value) {
+        return add(key, String.valueOf(value));
+    }
+    
+    public Placeholders add(String key, long value) {
+        return add(key, String.valueOf(value));
+    }
+    
+    public Placeholders add(String key, boolean value) {
+        return add(key, String.valueOf(value));
+    }
 }
