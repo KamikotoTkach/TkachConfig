@@ -83,19 +83,19 @@ public class Message {
   }
   
   public String getLegacy() {
-    return LegacyComponentSerializer.legacyAmpersand().serialize(MiniMessage.miniMessage().deserialize(message));
+    return LegacyComponentSerializer.legacyAmpersand().serialize(MiniMessage.get().parse(message));
   }
   
   public String getLegacy(Placeholders placeholders) {
-    return LegacyComponentSerializer.legacyAmpersand().serialize(MiniMessage.miniMessage().deserialize(message, placeholders.getResolvers()));
+    return LegacyComponentSerializer.legacyAmpersand().serialize(MiniMessage.get().parse(message, placeholders.getResolvers()));
   }
   
   public String getLegacySection() {
-    return LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(message));
+    return LegacyComponentSerializer.legacySection().serialize(MiniMessage.get().parse(message));
   }
   
   public String getLegacySection(Placeholders placeholders) {
-    return LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(message, placeholders.getResolvers()));
+    return LegacyComponentSerializer.legacySection().serialize(MiniMessage.get().parse(message, placeholders.getResolvers()));
   }
   
   public void throwback() throws MessageReturn {
