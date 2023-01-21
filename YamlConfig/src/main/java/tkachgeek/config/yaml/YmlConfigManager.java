@@ -129,26 +129,32 @@ public class YmlConfigManager {
     return Paths.get(plugin.getDataFolder().toString() + File.separatorChar + path + ".yml");
   }
   
-  public void storeAll() {
+  public void storeAll(boolean silent) {
     for (Config config : configs.values()) {
       long start = System.currentTimeMillis();
-      if (config.saveOnDisabling) {
-        Logger.getLogger(plugin.getName()).log(Level.INFO, "");
-        Logger.getLogger(plugin.getName()).log(Level.INFO, "Сохранение конфига " + config.path + ".yml");
-        
+      if (config.storeAllEnabled) {
+        if (!silent) Logger.getLogger(plugin.getName()).log(Level.INFO, "");
+        if (!silent) Logger.getLogger(plugin.getName()).log(Level.INFO, "Сохранение конфига " + config.path + ".yml");
+      
         try {
           config.store();
         } catch (Exception e) {
-          
-          Logger.getLogger(plugin.getName()).log(Level.WARNING, "Ошибка при сохранении конфига" + config.path + ".yml");
-          
+        
+          if (!silent)
+            Logger.getLogger(plugin.getName()).log(Level.WARNING, "Ошибка при сохранении конфига" + config.path + ".yml");
+        
           e.printStackTrace();
           continue;
         }
         long elapsed = System.currentTimeMillis() - start;
-        Logger.getLogger(plugin.getName()).log(Level.INFO, "Конфиг " + config.path + ".yml сохранён (заняло " + elapsed + "ms)");
+        if (!silent)
+          Logger.getLogger(plugin.getName()).log(Level.INFO, "Конфиг " + config.path + ".yml сохранён (заняло " + elapsed + "ms)");
       }
     }
+  }
+  
+  public void storeAll() {
+    storeAll(false);
   }
   
   public void reloadAllReloadable() {
