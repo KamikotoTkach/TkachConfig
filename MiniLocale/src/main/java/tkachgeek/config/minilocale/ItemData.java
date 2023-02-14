@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
+import tkachgeek.config.minilocale.wrapper.MiniMessageWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,17 +28,17 @@ public class ItemData {
   }
   @JsonIgnore
   public Component getName() {
-    return MiniMessage.get().deserialize(name);
+    return MiniMessageWrapper.deserialize(name);
   }
   @JsonIgnore
   public Component getName(Placeholders placeholders) {
-    return MiniMessage.get().parse(name, placeholders.getResolvers());
+    return MiniMessageWrapper.deserialize(name, placeholders);
   }
   @JsonIgnore
   public List<Component> getDescription() {
     List<Component> list = new ArrayList<>();
     for (String line : description) {
-      list.add(MiniMessage.get().deserialize(line).decoration(TextDecoration.ITALIC, false));
+      list.add(MiniMessageWrapper.deserialize(line).decoration(TextDecoration.ITALIC, false));
     }
     return list;
   }
@@ -46,7 +46,7 @@ public class ItemData {
   public List<Component> getDescription(Placeholders placeholders) {
     List<Component> list = new ArrayList<>();
     for (String line : description) {
-      list.add(MiniMessage.get().parse(line, placeholders.getResolvers()));
+      list.add(MiniMessageWrapper.deserialize(line, placeholders));
     }
     return list;
   }

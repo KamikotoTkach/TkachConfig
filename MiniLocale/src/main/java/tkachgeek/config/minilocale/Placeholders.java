@@ -22,8 +22,8 @@ public class Placeholders {
         return this;
     }
     
-    public Placeholders add(Template TagResolver) {
-        resolvers.add(TagResolver);
+    public Placeholders add(Template template) {
+        resolvers.add(template);
         return this;
     }
     
