@@ -1,6 +1,5 @@
 package tkachgeek.config.minilocale;
 
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import tkachgeek.commands.command.ArgumentSet;
 import tkachgeek.commands.command.Command;
 import tkachgeek.commands.command.arguments.executor.Executor;
@@ -17,7 +16,7 @@ public class MiniMessageTestCommand {
   private static class MiniMessageTestExecutor extends Executor {
     @Override
     public void executeForPlayer() throws MessageReturn {
-      throw new MessageReturn(MiniMessage.get().parse(argS(0)));
+      throw new MessageReturn(MiniMessageWrapper.parse(argS(0)));
     }
   }
 }
