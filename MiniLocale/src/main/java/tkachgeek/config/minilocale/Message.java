@@ -2,10 +2,11 @@ package tkachgeek.config.minilocale;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import tkachgeek.config.minilocale.wrapper.MiniMessageWrapper;
+import tkachgeek.tkachutils.messages.MessageReturn;
 
 import java.util.UUID;
 
@@ -26,10 +27,10 @@ public class Message {
       case MINI_MESSAGE:
         break;
       case LEGACY_AMPERSAND:
-        this.message = MiniMessage.miniMessage().serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(message)).replaceAll("\\\\", "");
+        this.message = MiniMessageWrapper.serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(message)).replaceAll("\\\\", "");
         break;
       case LEGACY_SECTION:
-        this.message = MiniMessage.miniMessage().serialize(LegacyComponentSerializer.legacySection().deserialize(message)).replaceAll("\\\\", "");
+        this.message = MiniMessageWrapper.serialize((LegacyComponentSerializer.legacySection().deserialize(message))).replaceAll("\\\\", "");
         break;
     }
   }
@@ -73,22 +74,42 @@ public class Message {
   }
   
   public Component get() {
-    return MiniMessage.miniMessage().deserialize(message);
+    return MiniMessageWrapper.deserialize(message);
   }
   
   public Component get(Placeholders placeholders) {
-    return MiniMessage.miniMessage().deserialize(message, placeholders.getResolvers());
+    return MiniMessageWrapper.deserialize(message, placeholders);
+  }
+  
+  public String getLegacy() {
+    return LegacyComponentSerializer.legacyAmpersand().serialize(get());
+  }
+  
+  public String getLegacy(Placeholders placeholders) {
+    return LegacyComponentSerializer.legacyAmpersand().serialize(get(placeholders));
+  }
+  
+  public String getLegacySection() {
+    return LegacyComponentSerializer.legacySection().serialize(get());
+  }
+  
+  public String getLegacySection(Placeholders placeholders) {
+    return LegacyComponentSerializer.legacySection().serialize(get(placeholders));
   }
   
   public void throwback() throws MessageReturn {
-    throw new MessageReturn(MiniMessage.miniMessage().deserialize(message));
+    throw new MessageReturn(get());
   }
   
   public void throwback(Placeholders placeholders) throws MessageReturn {
-    throw new MessageReturn(MiniMessage.miniMessage().deserialize(message, placeholders.getResolvers()));
+    throw new MessageReturn(get(placeholders));
   }
   
-  public boolean notEmpty() {
+  public boolean isNotEmpty() {
     return !message.isEmpty();
+  }
+  
+  public boolean isEmpty() {
+    return message.isEmpty();
   }
 }

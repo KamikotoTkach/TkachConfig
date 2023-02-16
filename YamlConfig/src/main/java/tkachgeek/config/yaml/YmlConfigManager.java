@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import tkachgeek.config.base.Config;
@@ -24,20 +25,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class YmlConfigManager {
-  static public HashMap<String, Config> configs = new HashMap<>();
-  static JavaPlugin plugin;
-  static ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+  public HashMap<String, Config> configs = new HashMap<>();
+  JavaPlugin plugin;
+  ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
   
-  public static ObjectMapper getMapper() {
-    return mapper;
-  }
-  
-  public static void init(JavaPlugin plugin) {
-    YmlConfigManager.plugin = plugin;
+  public YmlConfigManager(JavaPlugin plugin) {
+    this.plugin = plugin;
     
     mapper.findAndRegisterModules();
     mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
@@ -59,14 +57,18 @@ public class YmlConfigManager {
     module.addDeserializer(OfflinePlayer.class, new OfflinePlayerDeserializer());
     module.addSerializer(OfflinePlayer.class, new OfflinePlayerSerializer());
     
-    YmlConfigManager.module(module);
+    module(module);
   }
   
-  public static void module(Module module) {
+  public ObjectMapper getMapper() {
+    return mapper;
+  }
+  
+  public void module(Module module) {
     mapper.registerModule(module);
   }
   
-  public static <T extends YmlConfig> T load(String path, Class<T> type) {
+  public <T extends YmlConfig> T load(String path, Class<T> type) {
     long startTime = System.currentTimeMillis();
     
     Logger.getLogger(plugin.getName()).log(Level.INFO, "");
@@ -97,7 +99,7 @@ public class YmlConfigManager {
       Logger.getLogger(plugin.getName()).log(Level.WARNING, "Creating a config " + path + ".yml");
       config = Utils.getNewInstance(type);
     }
-    
+  
     if (config == null) {
       Logger.getLogger(plugin.getName()).log(Level.WARNING, "Failed to create a config " + path + ".yml (" + type.getSimpleName() + ")");
     } else {
@@ -106,11 +108,13 @@ public class YmlConfigManager {
       long elapsed = System.currentTimeMillis() - startTime;
       Logger.getLogger(plugin.getName()).log(Level.INFO, "Successfully loaded the config " + path + ".yml (took " + elapsed + "ms)");
     }
-    
+  
+    if (config != null) config.setManager(this);
+  
     return config;
   }
   
-  public static void store(String path, YmlConfig object) {
+  public void store(String path, YmlConfig object) {
     StringWriter writer = new StringWriter();
     
     try {
@@ -122,21 +126,21 @@ public class YmlConfigManager {
     Utils.writeString(getPath(path), writer.toString());
   }
   
-  static Path getPath(String path) {
+  Path getPath(String path) {
     return Paths.get(plugin.getDataFolder().toString() + File.separatorChar + path + ".yml");
   }
   
-  public static void storeAll() {
+  public void storeAll(boolean silent) {
     for (Config config : configs.values()) {
       long start = System.currentTimeMillis();
-      if (config.saveOnDisabling) {
-        Logger.getLogger(plugin.getName()).log(Level.INFO, "");
-        Logger.getLogger(plugin.getName()).log(Level.INFO, "Saving a config " + config.path + ".yml");
+      if (config.storeAllEnabled) {
+        if (!silent) Logger.getLogger(plugin.getName()).log(Level.INFO, "");
+        if (!silent) Logger.getLogger(plugin.getName()).log(Level.INFO, "Saving a config " + config.path + ".yml");
         
         try {
           config.store();
         } catch (Exception e) {
-  
+          
           Logger.getLogger(plugin.getName()).log(Level.WARNING, "Error when saving the config" + config.path + ".yml");
           
           e.printStackTrace();
@@ -148,7 +152,11 @@ public class YmlConfigManager {
     }
   }
   
-  public static void reload() {
+  public void storeAll() {
+    storeAll(false);
+  }
+  
+  public void reloadAllReloadable() {
     for (Config config : configs.values()) {
       if (config instanceof Reloadable) {
   
@@ -175,5 +183,55 @@ public class YmlConfigManager {
     }
     
     return writer.toString();
+  }
+  
+  public Optional<Config> getByName(String name) {
+    return Optional.ofNullable(configs.getOrDefault(name, null));
+  }
+  
+  public void reloadByCommand(String name, CommandSender messagesOut) {
+    Optional<Config> optConfig = getByName(name);
+    if (!optConfig.isPresent()) {
+      messagesOut.sendMessage("Config with name " + name + " not found or not loaded");
+      return;
+    }
+    
+    Config config = optConfig.get();
+    
+    if (config instanceof Reloadable) {
+      
+      messagesOut.sendMessage("Reloading config " + config.path + ".yml");
+      
+      try {
+        ((Reloadable) config).reload();
+      } catch (Exception e) {
+        messagesOut.sendMessage("Config " + config.path + ".yml reloading failed: " + e.getMessage());
+      }
+      messagesOut.sendMessage("Config " + config.path + ".yml reloading succesfully");
+    } else {
+      messagesOut.sendMessage("Config " + name + " cannot be reloaded");
+    }
+  }
+  
+  public void reloadByCommand(CommandSender messagesOut) {
+    for (Config config : configs.values()) {
+      if (config instanceof Reloadable) {
+        
+        messagesOut.sendMessage("Reloading config " + config.path + ".yml");
+  
+        try {
+          ((Reloadable) config).reload();
+        } catch (Exception e) {
+          messagesOut.sendMessage("Config " + config.path + ".yml reloading failed: " + e.getMessage());
+        }
+        messagesOut.sendMessage("Config " + config.path + ".yml reloaded succesfully");
+      }
+    }
+  }
+  
+  public void flush(String name, CommandSender messagesOut) {
+    Utils.writeString(getPath(name), "");
+    reloadByCommand(name, messagesOut);
+    messagesOut.sendMessage("File " + name + ".yml cleaned");
   }
 }

@@ -58,7 +58,7 @@ public abstract class JsonConfigManager {
   }
   
   public static void storeAll() {
-    configs.values().stream().filter(config -> config.saveOnDisabling).forEach(Config::store);
+    configs.values().stream().filter(config -> config.storeAllEnabled).forEach(Config::store);
   }
   
   public static String toString(JsonConfig config) {
