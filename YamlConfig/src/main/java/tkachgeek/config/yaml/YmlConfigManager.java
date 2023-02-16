@@ -173,15 +173,15 @@ public class YmlConfigManager {
     }
   }
   
-  public static String toString(YmlConfig config) {
+  public String toString(YmlConfig config) {
     StringWriter writer = new StringWriter();
-    
+  
     try {
       mapper.writeValue(writer, config);
     } catch (IOException e) {
       e.printStackTrace();
     }
-    
+  
     return writer.toString();
   }
   

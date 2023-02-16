@@ -24,7 +24,7 @@ public class FlushCommand {
     
     @Override
     public void executeForPlayer() throws MessageReturn {
-      Logger.getLogger(sender().getName()).log(Level.INFO, "Инициировал очистку конфига " + argS(0));
+      Logger.getLogger(sender().getName()).log(Level.INFO, "Initiated config  " + argS(0) + " cleaning");
       
       manager.flush(argS(0), sender());
     }

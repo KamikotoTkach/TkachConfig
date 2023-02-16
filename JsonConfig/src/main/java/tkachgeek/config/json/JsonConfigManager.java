@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.logging.Logger;
-
+@Deprecated
 public abstract class JsonConfigManager {
   static public HashMap<String, Config> configs = new HashMap<>();
   static JavaPlugin plugin;

@@ -1,7 +1,7 @@
 package tkachgeek.config.json;
 
 import tkachgeek.config.base.Config;
-
+@Deprecated
 public abstract class JsonConfig extends Config {
   @Override
   public void store(String path) {

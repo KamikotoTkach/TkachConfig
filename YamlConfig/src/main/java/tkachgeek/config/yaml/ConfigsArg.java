@@ -40,6 +40,6 @@ public class ConfigsArg extends Argument {
   
   @Override
   public String argumentName() {
-    return "название конфига";
+    return "config name";
   }
 }

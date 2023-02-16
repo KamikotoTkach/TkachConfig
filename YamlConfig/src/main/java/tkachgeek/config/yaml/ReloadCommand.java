@@ -26,7 +26,7 @@ public class ReloadCommand {
     
     @Override
     public void executeForPlayer() throws MessageReturn {
-      Logger.getLogger(sender().getName()).log(Level.INFO, "Инициировал перезагрузку конфига " + argS(0));
+      Logger.getLogger(sender().getName()).log(Level.INFO, "Initiated config " + argS(0) + " reloading");
       
       manager.reloadByCommand(argS(0), sender());
     }
@@ -39,7 +39,7 @@ public class ReloadCommand {
     
     @Override
     public void executeForPlayer() throws MessageReturn {
-      Logger.getLogger(sender().getName()).log(Level.INFO, "Инициировал перезагрузку конфигов");
+      Logger.getLogger(sender().getName()).log(Level.INFO, "Initiated configs reloading");
       manager.reloadByCommand(sender());
     }
   }
