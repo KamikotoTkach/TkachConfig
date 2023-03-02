@@ -6,6 +6,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import tkachgeek.config.minilocale.wrapper.MiniMessageWrapper;
+import tkachgeek.tkachutils.collections.CollectionUtils;
 import tkachgeek.tkachutils.messages.MessageReturn;
 
 import java.util.UUID;
@@ -14,6 +15,14 @@ public class Message {
   String message;
   
   public Message() {
+  }
+  
+  public Message(String... message) {
+    this(CollectionUtils.toString(message, "", "\n", true));
+  }
+  
+  public Message(Mode mode, String... message) {
+    this(CollectionUtils.toString(message, "", "\n", true), mode);
   }
   
   public Message(String message) {
