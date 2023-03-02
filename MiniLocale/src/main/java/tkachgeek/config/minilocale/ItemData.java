@@ -26,14 +26,17 @@ public class ItemData {
     this.name = name;
     this.description = description;
   }
+  
   @JsonIgnore
   public Component getName() {
     return MiniMessageWrapper.deserialize(name);
   }
+  
   @JsonIgnore
   public Component getName(Placeholders placeholders) {
     return MiniMessageWrapper.deserialize(name, placeholders);
   }
+  
   @JsonIgnore
   public List<Component> getDescription() {
     List<Component> list = new ArrayList<>();
@@ -42,6 +45,7 @@ public class ItemData {
     }
     return list;
   }
+  
   @JsonIgnore
   public List<Component> getDescription(Placeholders placeholders) {
     List<Component> list = new ArrayList<>();
