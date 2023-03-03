@@ -16,6 +16,7 @@ import tkachgeek.config.base.Config;
 import tkachgeek.config.base.Reloadable;
 import tkachgeek.config.base.Utils;
 import tkachgeek.config.yaml.module.*;
+import tkachgeek.tkachutils.scheduler.Scheduler;
 
 import java.io.File;
 import java.io.IOException;
@@ -134,14 +135,13 @@ public class YmlConfigManager {
       if (config.storeAllEnabled) {
         if (!silent) Logger.getLogger(plugin.getName()).log(Level.INFO, "");
         if (!silent) Logger.getLogger(plugin.getName()).log(Level.INFO, "Сохранение конфига " + config.path + ".yml");
-      
+  
         try {
           config.store();
         } catch (Exception e) {
-        
-          if (!silent)
+    
             Logger.getLogger(plugin.getName()).log(Level.WARNING, "Ошибка при сохранении конфига" + config.path + ".yml");
-        
+    
           e.printStackTrace();
           continue;
         }
@@ -233,5 +233,15 @@ public class YmlConfigManager {
     Utils.writeString(getPath(name), "");
     reloadByCommand(name, messagesOut);
     messagesOut.sendMessage("Файл " + name + ".yml очищен");
+  }
+  
+  public void scheduleAutosave(int ticks, boolean async) {
+    Scheduler<YmlConfigManager> scheduler = Scheduler.create(this).perform(x -> {
+      Logger.getLogger(plugin.getName()).log(Level.INFO, "Автоматическое сохранение конфигов..");
+      x.storeAll(true);
+      Logger.getLogger(plugin.getName()).log(Level.INFO, "Всё сохранено");
+    });
+    if (async) scheduler.async();
+    scheduler.register(plugin, ticks);
   }
 }
