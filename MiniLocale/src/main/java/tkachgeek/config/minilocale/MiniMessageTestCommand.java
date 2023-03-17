@@ -4,7 +4,7 @@ import tkachgeek.commands.command.ArgumentSet;
 import tkachgeek.commands.command.Command;
 import tkachgeek.commands.command.arguments.executor.Executor;
 import tkachgeek.commands.command.arguments.spaced.SpacedStringArg;
-import tkachgeek.config.minilocale.wrapper.MiniMessageWrapper;
+import tkachgeek.config.minilocale.wrapper.adventure.MiniMessageWrapper;
 import tkachgeek.tkachutils.messages.MessageReturn;
 
 public class MiniMessageTestCommand {

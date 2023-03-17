@@ -2,7 +2,7 @@ package tkachgeek.config.minilocale;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import tkachgeek.config.minilocale.wrapper.MiniMessageWrapper;
+import tkachgeek.config.minilocale.wrapper.adventure.MiniMessageWrapper;
 
 import java.util.ArrayList;
 import java.util.Collection;

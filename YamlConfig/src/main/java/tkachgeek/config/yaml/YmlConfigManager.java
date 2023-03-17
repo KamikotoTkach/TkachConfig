@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -32,7 +33,7 @@ import java.util.logging.Logger;
 public class YmlConfigManager {
   public HashMap<String, Config> configs = new HashMap<>();
   JavaPlugin plugin;
-  ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+  ObjectMapper mapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.SPLIT_LINES));
   
   public YmlConfigManager(JavaPlugin plugin) {
     this.plugin = plugin;

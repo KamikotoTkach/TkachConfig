@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
-import tkachgeek.config.minilocale.wrapper.MiniMessageWrapper;
+import tkachgeek.config.minilocale.wrapper.adventure.MiniMessageWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
