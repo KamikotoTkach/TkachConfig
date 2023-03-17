@@ -9,13 +9,13 @@ import java.util.List;
 
 public class MiniMessageWrapper {
   public static Component deserialize(String string) {
-    return MiniMessage.miniMessage().deserialize(string);
+    return MiniMessage.get().deserialize(string);
   }
   
   public static List<Component> deserialize(String... string) {
     List<Component> components = new ArrayList<>();
     for (String s : string) {
-      components.add(MiniMessage.miniMessage().deserialize(s));
+      components.add(MiniMessage.get().deserialize(s));
     }
     return components;
   }
@@ -23,19 +23,19 @@ public class MiniMessageWrapper {
   public static List<Component> deserialize(List<String> strings) {
     List<Component> components = new ArrayList<>();
     for (String s : strings) {
-      components.add(MiniMessage.miniMessage().deserialize(s));
+      components.add(MiniMessage.get().deserialize(s));
     }
     return components;
   }
   
   public static String serialize(Component component) {
-    return MiniMessage.miniMessage().serialize(component);
+    return MiniMessage.get().serialize(component);
   }
   
   public static List<String> serialize(Component... component) {
     List<String> strings = new ArrayList<>();
     for (Component c : component) {
-      strings.add(MiniMessage.miniMessage().serialize(c));
+      strings.add(MiniMessage.get().serialize(c));
     }
     return strings;
   }
@@ -43,19 +43,19 @@ public class MiniMessageWrapper {
   public static List<String> serialize(List<Component> components) {
     List<String> strings = new ArrayList<>();
     for (Component c : components) {
-      strings.add(MiniMessage.miniMessage().serialize(c));
+      strings.add(MiniMessage.get().serialize(c));
     }
     return strings;
   }
   
   public static Component deserialize(String string, Placeholders placeholders) {
-    return MiniMessage.miniMessage().deserialize(string, placeholders.getResolvers());
+    return MiniMessage.get().parse(string, placeholders.getResolvers());
   }
   
   public static List<Component> deserialize(List<String> strings, Placeholders placeholders) {
     List<Component> components = new ArrayList<>();
     for (String s : strings) {
-      components.add(MiniMessage.miniMessage().deserialize(s, placeholders.getResolvers()));
+      components.add(MiniMessage.get().parse(s, placeholders.getResolvers()));
     }
     return components;
   }

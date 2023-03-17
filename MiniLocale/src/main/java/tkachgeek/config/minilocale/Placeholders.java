@@ -1,26 +1,39 @@
 package tkachgeek.config.minilocale;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tag.Tag;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import tkachgeek.tkachutils.text.nanoid.NanoID;
+import net.kyori.adventure.text.minimessage.Template;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Placeholders {
-    private final HashMap<String, TagResolver> resolvers = new HashMap<>();
+    private final List<Template> resolvers = new ArrayList<>();
     
     public Placeholders(String key, String value) {
         add(key, value);
     }
     
-    public Placeholders(TagResolver resolver) {
+    public Placeholders(Template resolver) {
         add(resolver);
     }
     
     public Placeholders add(String key, String value) {
-        resolvers.put(key, TagResolver.resolver(key.toLowerCase(), Tag.preProcessParsed(value)));
+        resolvers.add(Template.of(key, value));
         return this;
+    }
+    
+    public Placeholders add(Template template) {
+        resolvers.add(template);
+        return this;
+    }
+    
+    public Placeholders add(String key, Component value) {
+        resolvers.add(Template.of(key, value));
+        return this;
+    }
+    
+    public List<Template> getResolvers() {
+        return resolvers;
     }
     
     public Placeholders add(String key, double value) {
@@ -41,19 +54,5 @@ public class Placeholders {
     
     public Placeholders add(String key, boolean value) {
         return add(key, String.valueOf(value));
-    }
-    
-    public Placeholders add(TagResolver tagResolver) {
-        resolvers.put(NanoID.randomNanoId(), tagResolver);
-        return this;
-    }
-    
-    public Placeholders add(String key, Component value) {
-        resolvers.put(key, TagResolver.resolver(key.toLowerCase(), Tag.inserting(value)));
-        return this;
-    }
-    
-    public TagResolver[] getResolvers() {
-        return resolvers.values().toArray(new TagResolver[0]);
     }
 }

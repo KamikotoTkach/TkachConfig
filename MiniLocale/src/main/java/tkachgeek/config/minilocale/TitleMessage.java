@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import java.time.Duration;
 
 public class TitleMessage {
-  Message title;
-  Message subtitle;
+  Message title = null;
+  Message subtitle = null;
   int fadeIn = 100;
   int stay = 1500;
   int fadeOut = 300;
