@@ -1,6 +1,5 @@
 package tkachgeek.config.base;
 
-import org.apache.logging.log4j.util.Strings;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -15,7 +14,7 @@ public class Utils {
       return Files.readString(path, StandardCharsets.UTF_8);
     } catch (IOException ignored) {
     }
-    return Strings.EMPTY;
+    return "";
   }
   
   public static void writeString(Path path, String text) {
