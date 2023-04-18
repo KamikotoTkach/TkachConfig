@@ -9,6 +9,9 @@ import java.util.List;
 public class Placeholders {
     private final List<Template> resolvers = new ArrayList<>();
     
+    public Placeholders() {
+    }
+    
     public Placeholders(String key, String value) {
         add(key, value);
     }
