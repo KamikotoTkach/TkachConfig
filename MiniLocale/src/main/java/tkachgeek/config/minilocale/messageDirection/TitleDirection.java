@@ -5,6 +5,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 
 public class TitleDirection extends MessageDirection {
+  public static final TitleDirection INSTANCE = new TitleDirection();
+  
+  private TitleDirection() {
+  }
+  
   @Override
   public void send(Audience audience, Component message) {
     send(audience, message, Component.empty(), Title.DEFAULT_TIMES);

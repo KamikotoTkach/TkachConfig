@@ -9,8 +9,10 @@ import java.util.*;
 public class AudienceWrapper {
   public static Audience wrap(Collection<UUID> pretenders, UUID... anotherPretenders) {
     Set<Player> players = new HashSet<>();
+    
     addIfOnline(players, pretenders);
     addIfOnline(players, Arrays.asList(anotherPretenders));
+    
     return Audience.audience(players);
   }
   
@@ -22,12 +24,14 @@ public class AudienceWrapper {
   
   public static Audience wrap(String... pretenders) {
     Set<Player> players = new HashSet<>();
+    
     for (String pretender : pretenders) {
       Player player = Bukkit.getPlayer(pretender);
       if (player != null) {
         players.add(player);
       }
     }
+    
     return Audience.audience(players);
   }
   
@@ -37,8 +41,8 @@ public class AudienceWrapper {
    */
   public static void addIfOnline(Set<Player> players, Iterable<? extends UUID> pretenders) {
     for (UUID pretender : pretenders) {
-      if (Bukkit.getOfflinePlayer(pretender).isOnline()) {
-        Player player = Bukkit.getPlayer(pretender);
+      Player player = Bukkit.getPlayer(pretender);
+      if (player != null) {
         players.add(player);
       }
     }

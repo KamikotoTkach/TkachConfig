@@ -3,6 +3,7 @@ package tkachgeek.config.minilocale;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import tkachgeek.config.minilocale.wrapper.adventure.MiniMessageWrapper;
+import tkachgeek.tkachutils.collections.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,5 +45,9 @@ public class MessageArr {
       list.add(MiniMessageWrapper.deserialize(line, placeholders));
     }
     return list;
+  }
+  
+  public Message toSingleMessage() {
+    return new Message(CollectionUtils.toString(message, "", "\n", true));
   }
 }

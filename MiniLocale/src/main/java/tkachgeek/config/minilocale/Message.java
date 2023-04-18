@@ -7,17 +7,19 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import tkachgeek.config.minilocale.messageDirection.ChatDirection;
 import tkachgeek.config.minilocale.messageDirection.MessageDirection;
-import tkachgeek.config.minilocale.messageDirection.MessageDirections;
+import tkachgeek.config.minilocale.wrapper.adventure.AudienceWrapper;
 import tkachgeek.config.minilocale.wrapper.adventure.MiniMessageWrapper;
 import tkachgeek.config.minilocale.wrapper.papi.PapiWrapper;
 import tkachgeek.tkachutils.collections.CollectionUtils;
 import tkachgeek.tkachutils.messages.MessageReturn;
 
+import java.util.Iterator;
 import java.util.UUID;
 
 public class Message {
-  String message;
+  protected String message;
   
   public Message() {
   }
@@ -50,19 +52,59 @@ public class Message {
   }
   
   public void send(MessageDirection direction, Audience audience) {
-    direction.send(audience, get());
+    audience.forEachAudience(x -> {
+      if (x instanceof CommandSender) {
+        direction.send(x, get((CommandSender) x));
+      } else {
+        direction.send(x, get());
+      }
+    });
   }
   
   public void send(MessageDirection direction, Audience audience, Placeholders placeholders) {
-    direction.send(audience, get(placeholders));
+    audience.forEachAudience(x -> {
+      if (x instanceof CommandSender) {
+        direction.send(x, get(placeholders, (CommandSender) x));
+      } else {
+        direction.send(x, get(placeholders));
+      }
+    });
+  }
+  
+  public void send(MessageDirection direction, Iterator<? extends Audience> audiences) {
+    audiences.forEachRemaining(audience -> audience.forEachAudience(item -> {
+      if (audience instanceof CommandSender) {
+        direction.send(item, get((CommandSender) item));
+      } else {
+        direction.send(item, get());
+      }
+    }));
+  }
+  
+  public void send(MessageDirection direction, Iterator<? extends Audience> audiences, Placeholders placeholders) {
+    audiences.forEachRemaining(audience -> audience.forEachAudience(item -> {
+      if (audience instanceof CommandSender) {
+        direction.send(item, get(placeholders, (CommandSender) item));
+      } else {
+        direction.send(item, get(placeholders));
+      }
+    }));
+  }
+  
+  public void broadcast(MessageDirection direction) {
+    send(direction, AudienceWrapper.onlinePlayers());
+  }
+  
+  public void broadcast() {
+    send(ChatDirection.INSTANCE, AudienceWrapper.onlinePlayers());
   }
   
   public void send(Audience audience) {
-    send(MessageDirections.CHAT, audience);
+    send(ChatDirection.INSTANCE, audience);
   }
   
   public void send(Audience audience, Placeholders placeholders) {
-    send(MessageDirections.CHAT, audience, placeholders);
+    send(ChatDirection.INSTANCE, audience, placeholders);
   }
   
   public void send(UUID maybeOfflinePlayer, Placeholders placeholders) {
@@ -89,10 +131,6 @@ public class Message {
     if (player != null) {
       send(player);
     }
-  }
-  
-  public String getText() {
-    return ((TextComponent) get()).content();
   }
   
   public Component get() {
@@ -157,5 +195,13 @@ public class Message {
   
   public boolean isEmpty() {
     return message.isEmpty();
+  }
+  
+  public String getText() {
+    return ((TextComponent) get()).content();
+  }
+  
+  public String serialize() {
+    return message;
   }
 }
