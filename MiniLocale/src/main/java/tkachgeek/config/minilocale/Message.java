@@ -63,6 +63,12 @@ public class Message {
           direction.send(x, get());
         }
       });
+    } else {
+      if (audience instanceof CommandSender) {
+        direction.send(audience, get((CommandSender) audience));
+      } else {
+        direction.send(audience, get());
+      }
     }
   }
   
@@ -77,35 +83,52 @@ public class Message {
           direction.send(x, get(placeholders));
         }
       });
+    } else {
+      if (audience instanceof CommandSender) {
+        direction.send(audience, get((CommandSender) audience));
+      } else {
+        direction.send(audience, get());
+      }
     }
   }
   
   public void send(MessageDirection direction, Iterator<? extends Audience> audiences) {
-    if (audiences instanceof ForwardingAudience) {
-      ForwardingAudience fw = (ForwardingAudience) audiences;
-      
-      fw.audiences().forEach(item -> {
-        if (item instanceof CommandSender) {
-          direction.send(item, get((CommandSender) item));
-        } else {
-          direction.send(item, get());
-        }
-      });
-    }
+    
+    audiences.forEachRemaining(audience -> {
+      if (audience instanceof ForwardingAudience) {
+        ForwardingAudience fw = (ForwardingAudience) audiences;
+        fw.audiences().forEach(x -> {
+          if (x instanceof CommandSender) {
+            direction.send(x, get((CommandSender) x));
+          } else {
+            direction.send(x, get());
+          }
+        });
+      } else if (audience instanceof CommandSender) {
+        direction.send(audience, get((CommandSender) audience));
+      } else {
+        direction.send(audience, get());
+      }
+    });
   }
   
   public void send(MessageDirection direction, Iterator<? extends Audience> audiences, Placeholders placeholders) {
-    if (audiences instanceof ForwardingAudience) {
-      ForwardingAudience fw = (ForwardingAudience) audiences;
-      
-      fw.audiences().forEach(item -> {
-        if (item instanceof CommandSender) {
-          direction.send(item, get(placeholders, (CommandSender) item));
-        } else {
-          direction.send(item, get(placeholders));
-        }
-      });
-    }
+    audiences.forEachRemaining(audience -> {
+      if (audience instanceof ForwardingAudience) {
+        ForwardingAudience fw = (ForwardingAudience) audiences;
+        fw.audiences().forEach(x -> {
+          if (x instanceof CommandSender) {
+            direction.send(x, get(placeholders, (CommandSender) x));
+          } else {
+            direction.send(x, get(placeholders));
+          }
+        });
+      } else if (audience instanceof CommandSender) {
+        direction.send(audience, get(placeholders, (CommandSender) audience));
+      } else {
+        direction.send(audience, get(placeholders));
+      }
+    });
   }
   
   public void broadcast(MessageDirection direction) {
