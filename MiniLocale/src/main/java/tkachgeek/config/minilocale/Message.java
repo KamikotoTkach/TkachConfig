@@ -85,9 +85,9 @@ public class Message {
       });
     } else {
       if (audience instanceof CommandSender) {
-        direction.send(audience, get((CommandSender) audience));
+        direction.send(audience, get(placeholders, (CommandSender) audience));
       } else {
-        direction.send(audience, get());
+        direction.send(audience, get(placeholders));
       }
     }
   }
