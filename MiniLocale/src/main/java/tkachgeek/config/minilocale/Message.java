@@ -14,7 +14,7 @@ import tkachgeek.config.minilocale.wrapper.adventure.AudienceWrapper;
 import tkachgeek.config.minilocale.wrapper.adventure.MiniMessageWrapper;
 import tkachgeek.config.minilocale.wrapper.papi.PapiWrapper;
 import tkachgeek.tkachutils.collections.CollectionUtils;
-import tkachgeek.tkachutils.messages.MessageReturn;
+import tkachgeek.tkachutils.messages.TargetableMessageReturn;
 
 import java.util.Iterator;
 import java.util.UUID;
@@ -135,6 +135,10 @@ public class Message {
     send(direction, AudienceWrapper.onlinePlayers());
   }
   
+  public void broadcast(MessageDirection direction, Placeholders placeholders) {
+    send(direction, AudienceWrapper.onlinePlayers(), placeholders);
+  }
+  
   public void broadcast() {
     send(ChatDirection.INSTANCE, AudienceWrapper.onlinePlayers());
   }
@@ -221,12 +225,12 @@ public class Message {
     return LegacyComponentSerializer.legacySection().serialize(get(placeholders, receiver));
   }
   
-  public void throwback() throws MessageReturn {
-    throw new MessageReturn(get());
+  public void throwback() throws TargetableMessageReturn {
+    throw new TargetableMessageReturn(this::get);
   }
   
-  public void throwback(Placeholders placeholders) throws MessageReturn {
-    throw new MessageReturn(get(placeholders));
+  public void throwback(Placeholders placeholders) throws TargetableMessageReturn {
+    throw new TargetableMessageReturn(receiver -> get(placeholders, receiver));
   }
   
   public boolean isNotEmpty() {

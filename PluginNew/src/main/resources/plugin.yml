@@ -1,0 +1,8 @@
+name: Config
+main: tkachgeek.config.base.Main
+version: 3.1
+api-version: 1.18
+libraries:
+  - com.fasterxml.jackson.core:jackson-core:2.13.1
+  - com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.1
+  - net.kyori:adventure-text-minimessage:4.12.0
