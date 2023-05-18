@@ -8,9 +8,10 @@ import tkachgeek.config.minilocale.Placeholders;
 import tkachgeek.tkachutils.items.ItemBuilder;
 
 public class ItemData {
-  public Material material;
+  Material material;
   Message name;
   MessageArr description;
+  int customModelData = 0;
   
   public ItemData() {
   }
@@ -19,6 +20,11 @@ public class ItemData {
     this.material = material;
     this.name = new Message(name);
     this.description = new MessageArr(description);
+  }
+  
+  public ItemData(Material material, Message name) {
+    this.material = material;
+    this.name = name;
   }
   
   public Material getMaterial() {
@@ -46,14 +52,24 @@ public class ItemData {
   }
   
   public ItemBuilder getItemBuilder() {
-    return ItemBuilder.of(material)
-                      .description(description.get().toArray(new Component[0]))
-                      .name(name.get());
+    ItemBuilder builder = ItemBuilder.of(material);
+    
+    builder.name(name.get());
+    builder.customModelData(customModelData);
+    
+    if (description != null) builder.description(description.get().toArray(new Component[0]));
+    
+    return builder;
   }
   
   public ItemBuilder getItemBuilder(Placeholders placeholders) {
-    return ItemBuilder.of(material)
-                      .description(description.get(placeholders).toArray(new Component[0]))
-                      .name(name.get(placeholders));
+    ItemBuilder builder = ItemBuilder.of(material);
+    
+    builder.name(name.get(placeholders));
+    builder.customModelData(customModelData);
+    
+    if (description != null) builder.description(description.get(placeholders).toArray(new Component[0]));
+    
+    return builder;
   }
 }
