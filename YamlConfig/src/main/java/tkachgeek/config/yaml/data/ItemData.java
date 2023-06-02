@@ -16,15 +16,43 @@ public class ItemData {
   public ItemData() {
   }
   
-  public ItemData(Material material, String name, String description) {
-    this.material = material;
-    this.name = new Message(name);
-    this.description = new MessageArr(description);
+  public ItemData(Material material, Message name, MessageArr description, int customModelData) {
+    this(material, name, customModelData);
+    this.description = description;
+  }
+  
+  public ItemData(Material material, Message name, int customModelData) {
+    this(material, name);
+    this.customModelData = customModelData;
   }
   
   public ItemData(Material material, Message name) {
+    this.customModelData = 0;
     this.material = material;
     this.name = name;
+  }
+  
+  public ItemData(Material material, String name, String description, int customModelData) {
+    this(material, name, customModelData);
+    this.description = new MessageArr(description.split("\\n"));
+  }
+  
+  public ItemData(Material material, String name, int customModelData) {
+    this(material, new Message(name), customModelData);
+  }
+  
+  public ItemData(Material material, Message name, MessageArr description) {
+    this(material, name);
+    this.description = description;
+  }
+  
+  public ItemData(Material material, String name, String description) {
+    this(material, name);
+    this.description = new MessageArr(description.split("\\n"));
+  }
+  
+  public ItemData(Material material, String name) {
+    this(material, new Message(name));
   }
   
   public Material getMaterial() {
