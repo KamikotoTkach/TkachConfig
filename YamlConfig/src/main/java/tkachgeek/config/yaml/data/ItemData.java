@@ -27,7 +27,6 @@ public class ItemData {
   }
   
   public ItemData(Material material, Message name) {
-    this.customModelData = 0;
     this.material = material;
     this.name = name;
   }
@@ -53,6 +52,14 @@ public class ItemData {
   
   public ItemData(Material material, String name) {
     this(material, new Message(name));
+  }
+  
+  public int getCustomModelData() {
+    return customModelData;
+  }
+  
+  public void setCustomModelData(int customModelData) {
+    this.customModelData = customModelData;
   }
   
   public Material getMaterial() {
@@ -82,8 +89,9 @@ public class ItemData {
   public ItemBuilder getItemBuilder() {
     ItemBuilder builder = ItemBuilder.of(material);
     
-    builder.name(name.get());
-    builder.customModelData(customModelData);
+    if (name != null) builder.name(name.get());
+    
+    if (customModelData != 0) builder.customModelData(customModelData);
     
     if (description != null) builder.description(description.get().toArray(new Component[0]));
     
@@ -93,8 +101,9 @@ public class ItemData {
   public ItemBuilder getItemBuilder(Placeholders placeholders) {
     ItemBuilder builder = ItemBuilder.of(material);
     
-    builder.name(name.get(placeholders));
-    builder.customModelData(customModelData);
+    if (name != null) builder.name(name.get(placeholders));
+    
+    if (customModelData != 0) builder.customModelData(customModelData);
     
     if (description != null) builder.description(description.get(placeholders).toArray(new Component[0]));
     

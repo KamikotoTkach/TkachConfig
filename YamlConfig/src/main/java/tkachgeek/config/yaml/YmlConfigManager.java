@@ -3,6 +3,7 @@ package tkachgeek.config.yaml;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -13,10 +14,12 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.yaml.snakeyaml.LoaderOptions;
 import tkachgeek.config.base.Config;
 import tkachgeek.config.base.Reloadable;
 import tkachgeek.config.base.Utils;
 import tkachgeek.config.minilocale.Message;
+import tkachgeek.config.minilocale.MessageArr;
 import tkachgeek.config.minilocale.translatable.TranslatableMessage;
 import tkachgeek.config.yaml.module.*;
 import tkachgeek.tkachutils.scheduler.Scheduler;
@@ -29,16 +32,31 @@ import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class YmlConfigManager {
   public HashMap<String, Config> configs = new HashMap<>();
   JavaPlugin plugin;
-  ObjectMapper mapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.SPLIT_LINES));
+  ObjectMapper mapper;
+  Logger logger;
   
   public YmlConfigManager(JavaPlugin plugin) {
+    this(plugin, 10 * 1024 * 1024);
+  }
+  
+  public YmlConfigManager(JavaPlugin plugin, int maxConfigSizeBytes) {
     this.plugin = plugin;
+    this.logger = plugin.getLogger();
+    
+    LoaderOptions loaderOptions = new LoaderOptions();
+    loaderOptions.setCodePointLimit(maxConfigSizeBytes);
+    
+    YAMLFactory yaml = YAMLFactory.builder()
+                                  .disable(YAMLGenerator.Feature.SPLIT_LINES)
+                                  .loaderOptions(loaderOptions)
+                                  .build();
+    
+    mapper = new ObjectMapper(yaml);
     
     mapper.findAndRegisterModules();
     mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
@@ -46,7 +64,7 @@ public class YmlConfigManager {
     mapper.setVisibility(PropertyAccessor.SETTER, JsonAutoDetect.Visibility.NONE);
     mapper.setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE);
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    //mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true);
+    mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true);
     
     SimpleModule module = new SimpleModule("TkachGeekModules");
     
@@ -65,63 +83,69 @@ public class YmlConfigManager {
     module.addDeserializer(Message.class, new MessageDeserializer());
     module.addSerializer(Message.class, new MessageSerializer());
     
+    module.addDeserializer(MessageArr.class, new MessageArrDeserializer());
+    module.addSerializer(MessageArr.class, new MessageArrSerializer());
+    
     module(module);
-  }
-  
-  public ObjectMapper getMapper() {
-    return mapper;
   }
   
   public void module(Module module) {
     mapper.registerModule(module);
   }
   
+  public ObjectMapper getMapper() {
+    return mapper;
+  }
+  
   public <T extends YmlConfig> T load(String path, Class<T> type) {
     long startTime = System.currentTimeMillis();
     
-    logger().log(Level.INFO, "");
-    logger().log(Level.INFO, "Чтение конфига " + path + ".yml");
+    logger.info("");
+    logger.info("Чтение конфига " + path + ".yml");
     
     T config = null;
     String yaml = "";
+    
     try {
       yaml = Utils.readString(getPath(path));
       
       if (yaml.length() == 0) {
-        logger().log(Level.INFO, "Файл не найден, будет использован дефолтный");
+        logger.info("Файл не найден, будет использован дефолтный");
         config = Utils.getNewInstance(type);
       } else {
         config = mapper.readValue(yaml, type);
       }
     } catch (IOException e) {
-      
-      String newPath = path + " " + new Timestamp(System.currentTimeMillis()).toString().replace(":", "-");
-      
-      logger().log(Level.WARNING, "Не удалось прочесть конфиг " + path + ".yml");
-      logger().log(Level.WARNING, "Файл не пустой, создана копия под именем " + newPath + ".yml");
-      
-      Utils.writeString(getPath(newPath), yaml);
-      
+      logger.warning("Не удалось прочесть конфиг " + path + ".yml");
+      if (yaml.length() != 0) {
+        String newPath = path + " " + new Timestamp(System.currentTimeMillis()).toString().replace(":", "-");
+        logger.warning("Файл не пустой, создана копия под именем " + newPath + ".yml");
+        Utils.writeString(getPath(newPath), yaml);
+      }
       e.printStackTrace();
     }
     
     if (config == null) {
-      logger().log(Level.WARNING, "Создание конфига " + path + ".yml");
+      logger.warning("Создание конфига " + path + ".yml");
       config = Utils.getNewInstance(type);
     }
-  
+    
     if (config == null) {
-      logger().log(Level.WARNING, "Не удалось создать конфиг " + path + ".yml (" + type.getSimpleName() + ")");
+      logger.warning("Не удалось создать конфиг " + path + ".yml (" + type.getSimpleName() + ")");
     } else {
       config.path = path;
       configs.put(path, config);
       long elapsed = System.currentTimeMillis() - startTime;
-      logger().log(Level.INFO, "Успешно загружен конфиг " + path + ".yml (заняло " + elapsed + "ms)");
+      logger.info("Успешно загружен конфиг " + path + ".yml (заняло " + elapsed + "ms)");
     }
-  
+    
     if (config != null) config.setManager(this);
-  
+    
     return config;
+  }
+  
+  Path getPath(String path) {
+    return Paths.get(plugin.getDataFolder().toString() + File.separatorChar + path + ".yml");
   }
   
   public void store(String path, YmlConfig object) {
@@ -136,54 +160,46 @@ public class YmlConfigManager {
     Utils.writeString(getPath(path), writer.toString());
   }
   
-  Path getPath(String path) {
-    return Paths.get(plugin.getDataFolder().toString() + File.separatorChar + path + ".yml");
+  public void storeAll() {
+    storeAll(false);
   }
   
   public void storeAll(boolean silent) {
     for (Config config : configs.values()) {
       long start = System.currentTimeMillis();
       if (config.storeAllEnabled) {
-        if (!silent) logger().log(Level.INFO, "");
-        if (!silent) logger().log(Level.INFO, "Сохранение конфига " + config.path + ".yml");
+        if (!silent) logger.info("");
+        if (!silent) logger.info("Сохранение конфига " + config.path + ".yml");
         
         try {
           config.store();
         } catch (Exception e) {
           
-          logger().log(Level.WARNING, "Ошибка при сохранении конфига" + config.path + ".yml");
+          logger.warning("Ошибка при сохранении конфига" + config.path + ".yml");
           
           e.printStackTrace();
           continue;
         }
         long elapsed = System.currentTimeMillis() - start;
         if (!silent)
-          logger().log(Level.INFO, "Конфиг " + config.path + ".yml сохранён (заняло " + elapsed + "ms)");
+          logger.info("Конфиг " + config.path + ".yml сохранён (заняло " + elapsed + "ms)");
       }
     }
-  }
-  
-  private Logger logger() {
-    return Logger.getLogger(plugin.getName());
-  }
-  
-  public void storeAll() {
-    storeAll(false);
   }
   
   public void reloadAllReloadable() {
     for (Config config : configs.values()) {
       if (config instanceof Reloadable) {
         
-        logger().log(Level.INFO, "Перезагрузка конфига " + config.path + ".yml");
+        logger.info("Перезагрузка конфига " + config.path + ".yml");
         
         try {
           ((Reloadable) config).reload();
         } catch (Exception e) {
-          logger().log(Level.WARNING, "Перезагрузка конфига " + config.path + ".yml не удалась: " + e.getMessage());
+          logger.warning("Перезагрузка конфига " + config.path + ".yml не удалась: " + e.getMessage());
           continue;
         }
-        logger().log(Level.INFO, "Перезагрузка конфига " + config.path + ".yml прошла успешно");
+        logger.info("Перезагрузка конфига " + config.path + ".yml прошла успешно");
       }
     }
   }
@@ -200,46 +216,18 @@ public class YmlConfigManager {
     return writer.toString();
   }
   
-  public Optional<Config> getByName(String name) {
-    return Optional.ofNullable(configs.getOrDefault(name, null));
-  }
-  
-  public void reloadByCommand(String name, CommandSender messagesOut) {
-    Optional<Config> optConfig = getByName(name);
-    if (!optConfig.isPresent()) {
-      messagesOut.sendMessage("Конфик с именем " + name + " не найден или ещё не был загружен");
-      return;
-    }
-    
-    Config config = optConfig.get();
-    
-    if (config instanceof Reloadable) {
-      
-      messagesOut.sendMessage("Перезагрузка конфига " + config.path + ".yml");
-      
-      try {
-        ((Reloadable) config).reload();
-      } catch (Exception e) {
-        messagesOut.sendMessage("Перезагрузка конфига " + config.path + ".yml не удалась: " + e.getMessage());
-      }
-      messagesOut.sendMessage("Перезагрузка конфига " + config.path + ".yml прошла успешно");
-    } else {
-      messagesOut.sendMessage("Конфиг " + name + " не может быть перезагружен");
-    }
-  }
-  
   public void reloadByCommand(CommandSender messagesOut) {
     for (Config config : configs.values()) {
       if (config instanceof Reloadable) {
         
-        messagesOut.sendMessage("Перезагрузка конфига " + config.path + ".yml");
-  
+        messagesOut.sendPlainMessage("Перезагрузка конфига " + config.path + ".yml");
+        
         try {
           ((Reloadable) config).reload();
         } catch (Exception e) {
-          messagesOut.sendMessage("Перезагрузка конфига " + config.path + ".yml не удалась: " + e.getMessage());
+          messagesOut.sendPlainMessage("Перезагрузка конфига " + config.path + ".yml не удалась: " + e.getMessage());
         }
-        messagesOut.sendMessage("Перезагрузка конфига " + config.path + ".yml прошла успешно");
+        messagesOut.sendPlainMessage("Перезагрузка конфига " + config.path + ".yml прошла успешно");
       }
     }
   }
@@ -247,17 +235,46 @@ public class YmlConfigManager {
   public void flush(String name, CommandSender messagesOut) {
     Utils.writeString(getPath(name), "");
     reloadByCommand(name, messagesOut);
-    messagesOut.sendMessage("Файл " + name + ".yml очищен");
+    messagesOut.sendPlainMessage("Файл " + name + ".yml очищен");
+  }
+  
+  public void reloadByCommand(String name, CommandSender messagesOut) {
+    Optional<Config> optConfig = getByName(name);
+    if (optConfig.isEmpty()) {
+      messagesOut.sendPlainMessage("Конфик с именем " + name + " не найден или ещё не был загружен");
+      return;
+    }
+    
+    Config config = optConfig.get();
+    
+    if (config instanceof Reloadable) {
+      
+      messagesOut.sendPlainMessage("Перезагрузка конфига " + config.path + ".yml");
+      
+      try {
+        ((Reloadable) config).reload();
+      } catch (Exception e) {
+        messagesOut.sendPlainMessage("Перезагрузка конфига " + config.path + ".yml не удалась: " + e.getMessage());
+      }
+      messagesOut.sendPlainMessage("Перезагрузка конфига " + config.path + ".yml прошла успешно");
+    } else {
+      messagesOut.sendPlainMessage("Конфиг " + name + " не может быть перезагружен");
+    }
+  }
+  
+  public Optional<Config> getByName(String name) {
+    return Optional.ofNullable(configs.getOrDefault(name, null));
   }
   
   public void scheduleAutosave(int ticks, boolean async) {
     Scheduler<YmlConfigManager> scheduler = Scheduler.create(this).perform(x -> {
-      logger().log(Level.INFO, "Автоматическое сохранение конфигов..");
+      logger.info("Автоматическое сохранение конфигов..");
       x.storeAll(true);
-      logger().log(Level.INFO, "Всё сохранено");
+      logger.info("Всё сохранено");
     });
     
     if (async) scheduler.async();
+    
     scheduler.register(plugin, ticks);
   }
 }
