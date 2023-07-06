@@ -3,18 +3,17 @@ package tkachgeek.config.yaml;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.yaml.snakeyaml.LoaderOptions;
 import tkachgeek.config.base.Config;
 import tkachgeek.config.base.Reloadable;
 import tkachgeek.config.base.Utils;
@@ -22,7 +21,6 @@ import tkachgeek.config.minilocale.Message;
 import tkachgeek.config.minilocale.MessageArr;
 import tkachgeek.config.minilocale.translatable.TranslatableMessage;
 import tkachgeek.config.yaml.module.*;
-import tkachgeek.tkachutils.scheduler.Scheduler;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,13 +46,7 @@ public class YmlConfigManager {
     this.plugin = plugin;
     this.logger = plugin.getLogger();
     
-    LoaderOptions loaderOptions = new LoaderOptions();
-    loaderOptions.setCodePointLimit(maxConfigSizeBytes);
-    
-    YAMLFactory yaml = YAMLFactory.builder()
-                                  .disable(YAMLGenerator.Feature.SPLIT_LINES)
-                                  .loaderOptions(loaderOptions)
-                                  .build();
+    YAMLFactory yaml = new YAMLFactory().disable(YAMLGenerator.Feature.SPLIT_LINES);
     
     mapper = new ObjectMapper(yaml);
     
@@ -64,7 +56,6 @@ public class YmlConfigManager {
     mapper.setVisibility(PropertyAccessor.SETTER, JsonAutoDetect.Visibility.NONE);
     mapper.setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE);
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true);
     
     SimpleModule module = new SimpleModule("TkachGeekModules");
     
@@ -99,6 +90,7 @@ public class YmlConfigManager {
   
   public <T extends YmlConfig> T load(String path, Class<T> type) {
     long startTime = System.currentTimeMillis();
+    boolean shouldSaveCopy = false;
     
     logger.info("");
     logger.info("Чтение конфига " + path + ".yml");
@@ -110,8 +102,9 @@ public class YmlConfigManager {
       yaml = Utils.readString(getPath(path));
       
       if (yaml.length() == 0) {
-        logger.info("Файл не найден, будет использован дефолтный");
+        logger.info("Файл не найден, будет создан дефолтный");
         config = Utils.getNewInstance(type);
+        shouldSaveCopy = true;
       } else {
         config = mapper.readValue(yaml, type);
       }
@@ -128,24 +121,36 @@ public class YmlConfigManager {
     if (config == null) {
       logger.warning("Создание конфига " + path + ".yml");
       config = Utils.getNewInstance(type);
+      shouldSaveCopy = true;
     }
     
     if (config == null) {
       logger.warning("Не удалось создать конфиг " + path + ".yml (" + type.getSimpleName() + ")");
     } else {
       config.path = path;
+      config.setManager(this);
+      
       configs.put(path, config);
+      
+      if (shouldSaveCopy) config.store();
+      
       long elapsed = System.currentTimeMillis() - startTime;
       logger.info("Успешно загружен конфиг " + path + ".yml (заняло " + elapsed + "ms)");
     }
-    
-    if (config != null) config.setManager(this);
     
     return config;
   }
   
   Path getPath(String path) {
     return Paths.get(plugin.getDataFolder().toString() + File.separatorChar + path + ".yml");
+  }
+  
+  public void store(String path, YmlConfig object, boolean async) {
+    if (async) {
+      Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> store(path, object));
+    } else {
+      Bukkit.getScheduler().runTask(plugin, () -> store(path, object));
+    }
   }
   
   public void store(String path, YmlConfig object) {
@@ -220,14 +225,14 @@ public class YmlConfigManager {
     for (Config config : configs.values()) {
       if (config instanceof Reloadable) {
         
-        messagesOut.sendPlainMessage("Перезагрузка конфига " + config.path + ".yml");
+        messagesOut.sendMessage("Перезагрузка конфига " + config.path + ".yml");
         
         try {
           ((Reloadable) config).reload();
         } catch (Exception e) {
-          messagesOut.sendPlainMessage("Перезагрузка конфига " + config.path + ".yml не удалась: " + e.getMessage());
+          messagesOut.sendMessage("Перезагрузка конфига " + config.path + ".yml не удалась: " + e.getMessage());
         }
-        messagesOut.sendPlainMessage("Перезагрузка конфига " + config.path + ".yml прошла успешно");
+        messagesOut.sendMessage("Перезагрузка конфига " + config.path + ".yml прошла успешно");
       }
     }
   }
@@ -235,13 +240,13 @@ public class YmlConfigManager {
   public void flush(String name, CommandSender messagesOut) {
     Utils.writeString(getPath(name), "");
     reloadByCommand(name, messagesOut);
-    messagesOut.sendPlainMessage("Файл " + name + ".yml очищен");
+    messagesOut.sendMessage("Файл " + name + ".yml очищен");
   }
   
   public void reloadByCommand(String name, CommandSender messagesOut) {
     Optional<Config> optConfig = getByName(name);
     if (optConfig.isEmpty()) {
-      messagesOut.sendPlainMessage("Конфик с именем " + name + " не найден или ещё не был загружен");
+      messagesOut.sendMessage("Конфик с именем " + name + " не найден или ещё не был загружен");
       return;
     }
     
@@ -249,16 +254,16 @@ public class YmlConfigManager {
     
     if (config instanceof Reloadable) {
       
-      messagesOut.sendPlainMessage("Перезагрузка конфига " + config.path + ".yml");
+      messagesOut.sendMessage("Перезагрузка конфига " + config.path + ".yml");
       
       try {
         ((Reloadable) config).reload();
       } catch (Exception e) {
-        messagesOut.sendPlainMessage("Перезагрузка конфига " + config.path + ".yml не удалась: " + e.getMessage());
+        messagesOut.sendMessage("Перезагрузка конфига " + config.path + ".yml не удалась: " + e.getMessage());
       }
-      messagesOut.sendPlainMessage("Перезагрузка конфига " + config.path + ".yml прошла успешно");
+      messagesOut.sendMessage("Перезагрузка конфига " + config.path + ".yml прошла успешно");
     } else {
-      messagesOut.sendPlainMessage("Конфиг " + name + " не может быть перезагружен");
+      messagesOut.sendMessage("Конфиг " + name + " не может быть перезагружен");
     }
   }
   
@@ -267,14 +272,16 @@ public class YmlConfigManager {
   }
   
   public void scheduleAutosave(int ticks, boolean async) {
-    Scheduler<YmlConfigManager> scheduler = Scheduler.create(this).perform(x -> {
-      logger.info("Автоматическое сохранение конфигов..");
-      x.storeAll(true);
-      logger.info("Всё сохранено");
-    });
-    
-    if (async) scheduler.async();
-    
-    scheduler.register(plugin, ticks);
+    if (async) {
+      Bukkit.getScheduler().runTaskAsynchronously(plugin, this::autosave);
+    } else {
+      Bukkit.getScheduler().runTask(plugin, this::autosave);
+    }
+  }
+  
+  private void autosave() {
+    logger.info("Автоматическое сохранение конфигов..");
+    storeAll(true);
+    logger.info("Всё сохранено");
   }
 }
