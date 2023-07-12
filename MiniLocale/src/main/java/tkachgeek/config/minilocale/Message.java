@@ -4,7 +4,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.audience.ForwardingAudience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -242,19 +242,19 @@ public class Message {
   }
   
   public String getText() {
-    return PlainTextComponentSerializer.plainText().serialize(get());
+    return PlainComponentSerializer.plain().serialize(get());
   }
   
   public String getText(CommandSender receiver) {
-    return PlainTextComponentSerializer.plainText().serialize(get(receiver));
+    return PlainComponentSerializer.plain().serialize(get(receiver));
   }
   
   public String getText(Placeholders placeholders) {
-    return PlainTextComponentSerializer.plainText().serialize(get(placeholders));
+    return PlainComponentSerializer.plain().serialize(get(placeholders));
   }
   
   public String getText(Placeholders placeholders, CommandSender receiver) {
-    return PlainTextComponentSerializer.plainText().serialize(get(placeholders, receiver));
+    return PlainComponentSerializer.plain().serialize(get(placeholders, receiver));
   }
   
   public String serialize() {
