@@ -273,9 +273,9 @@ public class YmlConfigManager {
   
   public void scheduleAutosave(int ticks, boolean async) {
     if (async) {
-      Bukkit.getScheduler().runTaskAsynchronously(plugin, this::autosave);
+      Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::autosave, ticks, ticks);
     } else {
-      Bukkit.getScheduler().runTask(plugin, this::autosave);
+      Bukkit.getScheduler().runTaskTimer(plugin, this::autosave, ticks, ticks);
     }
   }
   
