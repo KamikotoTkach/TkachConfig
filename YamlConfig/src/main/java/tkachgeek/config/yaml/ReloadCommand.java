@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 public class ReloadCommand {
   public static Command get(YmlConfigManager manager) {
-    return new Command("reload", "*").arguments(
+    return new Command("reload", "$*").arguments(
        new ArgumentSet(new ConfigReload(manager), "", new ConfigsArg(manager)),
        new ArgumentSet(new ConfigReloadAll(manager), "", new ExactStringArg("all"))
     );
