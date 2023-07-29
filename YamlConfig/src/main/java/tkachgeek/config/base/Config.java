@@ -12,5 +12,7 @@ public abstract class Config {
   
   abstract public void store(String path);
   
+  abstract public void store(String path, boolean async);
+  
   abstract public String toString();
 }

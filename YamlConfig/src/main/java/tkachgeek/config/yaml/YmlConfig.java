@@ -4,14 +4,20 @@ import tkachgeek.config.base.Config;
 
 public abstract class YmlConfig extends Config {
   transient protected YmlConfigManager manager = null;
+  
+  @Override
+  public void store() {
+    manager.store(path, this);
+  }
+  
   @Override
   public void store(String path) {
     manager.store(path, this);
   }
   
   @Override
-  public void store() {
-    manager.store(path, this);
+  public void store(String path, boolean async) {
+    manager.store(path, this, async);
   }
   
   @Override
