@@ -3,6 +3,7 @@ import org.bukkit.command.CommandSender;
 import ru.cwcode.commands.ArgumentSet;
 import ru.cwcode.commands.Command;
 import ru.cwcode.commands.paperplatform.executor.Executor;
+import ru.cwcode.commands.paperplatform.paper.PaperSender;
 import tkachgeek.tkachutils.messages.MessageReturn;
 
 import java.util.logging.Level;
@@ -24,7 +25,7 @@ public class FlushCommand {
     
     @Override
     public void executeForPlayer() throws MessageReturn {
-      CommandSender sender = sender().getCommandSender();
+      CommandSender sender = ((PaperSender) sender()).getCommandSender();
       Logger.getLogger(sender.getName()).log(Level.INFO, "Инициировал очистку конфига " + argS(0));
       
       manager.flush(argS(0), sender);
