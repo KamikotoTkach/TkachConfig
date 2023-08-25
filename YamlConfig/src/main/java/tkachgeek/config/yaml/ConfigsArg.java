@@ -1,7 +1,7 @@
 package tkachgeek.config.yaml;
 
-import org.bukkit.command.CommandSender;
-import tkachgeek.commands.command.Argument;
+import ru.cwcode.commands.Argument;
+import ru.cwcode.commands.api.Sender;
 import tkachgeek.config.base.Config;
 import tkachgeek.config.base.Reloadable;
 
@@ -27,7 +27,7 @@ public class ConfigsArg extends Argument {
   }
   
   @Override
-  public List<String> completions(CommandSender commandSender) {
+  public List<String> completions(Sender commandSender) {
     List<String> list = new ArrayList<>();
     for (Map.Entry<String, Config> x : manager.configs.entrySet()) {
       if (x.getValue() instanceof Reloadable) {

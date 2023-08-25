@@ -1,8 +1,8 @@
 package tkachgeek.config.yaml;
-
-import tkachgeek.commands.command.ArgumentSet;
-import tkachgeek.commands.command.Command;
-import tkachgeek.commands.command.arguments.executor.Executor;
+import org.bukkit.command.CommandSender;
+import ru.cwcode.commands.ArgumentSet;
+import ru.cwcode.commands.Command;
+import ru.cwcode.commands.paperplatform.executor.Executor;
 import tkachgeek.tkachutils.messages.MessageReturn;
 
 import java.util.logging.Level;
@@ -24,9 +24,10 @@ public class FlushCommand {
     
     @Override
     public void executeForPlayer() throws MessageReturn {
-      Logger.getLogger(sender().getName()).log(Level.INFO, "Инициировал очистку конфига " + argS(0));
+      CommandSender sender = (CommandSender) sender();
+      Logger.getLogger(sender.getName()).log(Level.INFO, "Инициировал очистку конфига " + argS(0));
       
-      manager.flush(argS(0), sender());
+      manager.flush(argS(0), sender);
     }
   }
 }

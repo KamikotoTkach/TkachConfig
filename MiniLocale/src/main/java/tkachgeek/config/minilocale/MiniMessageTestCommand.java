@@ -1,11 +1,11 @@
 package tkachgeek.config.minilocale;
 
 import org.bukkit.Bukkit;
-import tkachgeek.commands.command.ArgumentSet;
-import tkachgeek.commands.command.Command;
-import tkachgeek.commands.command.arguments.bukkit.OnlinePlayers;
-import tkachgeek.commands.command.arguments.executor.Executor;
-import tkachgeek.commands.command.arguments.spaced.SpacedStringArg;
+import ru.cwcode.commands.ArgumentSet;
+import ru.cwcode.commands.Command;
+import ru.cwcode.commands.arguments.spaced.SpacedStringArg;
+import ru.cwcode.commands.paperplatform.argument.OnlinePlayers;
+import ru.cwcode.commands.paperplatform.executor.Executor;
 import tkachgeek.tkachutils.messages.MessageReturn;
 
 public class MiniMessageTestCommand {
