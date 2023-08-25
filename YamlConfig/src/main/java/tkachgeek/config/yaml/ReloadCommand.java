@@ -27,7 +27,7 @@ public class ReloadCommand {
     
     @Override
     public void executeForPlayer() throws MessageReturn {
-      CommandSender sender = (CommandSender) sender();
+      CommandSender sender = sender().getCommandSender();
       Logger.getLogger(sender.getName()).log(Level.INFO, "Инициировал перезагрузку конфига " + argS(0));
       
       manager.reloadByCommand(argS(0), sender);
@@ -41,7 +41,7 @@ public class ReloadCommand {
     
     @Override
     public void executeForPlayer() throws MessageReturn {
-      CommandSender sender = (CommandSender) sender();
+      CommandSender sender = CommandSender sender = sender().getCommandSender();
       
       Logger.getLogger(sender.getName()).log(Level.INFO, "Инициировал перезагрузку конфигов");
       manager.reloadByCommand(sender);

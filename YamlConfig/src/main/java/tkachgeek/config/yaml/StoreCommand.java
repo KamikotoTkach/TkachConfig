@@ -26,7 +26,7 @@ public class StoreCommand {
     
     @Override
     public void executeForPlayer() throws MessageReturn {
-      CommandSender sender = (CommandSender) sender();
+      CommandSender sender = sender().getCommandSender();
       
       Logger.getLogger(sender.getName()).log(Level.INFO, "Инициировал сохранение конфига " + argS(0));
       manager.storeAll();
