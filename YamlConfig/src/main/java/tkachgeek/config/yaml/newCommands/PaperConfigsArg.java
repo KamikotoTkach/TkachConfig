@@ -1,18 +1,19 @@
-package tkachgeek.config.yaml;
+package tkachgeek.config.yaml.newCommands;
 
-import org.bukkit.command.CommandSender;
-import tkachgeek.commands.command.Argument;
+import ru.cwcode.commands.Argument;
+import ru.cwcode.commands.api.Sender;
 import tkachgeek.config.base.Config;
 import tkachgeek.config.base.Reloadable;
+import tkachgeek.config.yaml.YmlConfigManager;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ConfigsArg extends Argument {
+public class PaperConfigsArg extends Argument {
   YmlConfigManager manager;
   
-  public ConfigsArg(YmlConfigManager manager) {
+  public PaperConfigsArg(YmlConfigManager manager) {
     this.manager = manager;
   }
   
@@ -27,7 +28,7 @@ public class ConfigsArg extends Argument {
   }
   
   @Override
-  public List<String> completions(CommandSender commandSender) {
+  public List<String> completions(Sender commandSender) {
     List<String> list = new ArrayList<>();
     for (Map.Entry<String, Config> x : manager.configs.entrySet()) {
       if (x.getValue() instanceof Reloadable) {

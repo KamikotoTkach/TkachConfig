@@ -1,11 +1,9 @@
 package tkachgeek.config.yaml;
 
-import org.bukkit.command.CommandSender;
-import ru.cwcode.commands.ArgumentSet;
-import ru.cwcode.commands.Command;
-import ru.cwcode.commands.arguments.ExactStringArg;
-import ru.cwcode.commands.paperplatform.executor.Executor;
-import ru.cwcode.commands.paperplatform.paper.PaperSender;
+import tkachgeek.commands.command.ArgumentSet;
+import tkachgeek.commands.command.Command;
+import tkachgeek.commands.command.arguments.ExactStringArg;
+import tkachgeek.commands.command.arguments.executor.Executor;
 import tkachgeek.tkachutils.messages.MessageReturn;
 
 import java.util.logging.Level;
@@ -28,24 +26,23 @@ public class ReloadCommand {
     
     @Override
     public void executeForPlayer() throws MessageReturn {
-      CommandSender sender = ((PaperSender) sender()).getCommandSender();
-      Logger.getLogger(sender.getName()).log(Level.INFO, "Инициировал перезагрузку конфига " + argS(0));
+      Logger.getLogger(sender().getName()).log(Level.INFO, "Инициировал перезагрузку конфига " + argS(0));
       
-      manager.reloadByCommand(argS(0), sender);
+      manager.reloadByCommand(argS(0), sender());
     }
   }
   
-  private static class ConfigReloadAll extends ConfigReload {
+  private static class ConfigReloadAll extends Executor {
+    YmlConfigManager manager;
+    
     public ConfigReloadAll(YmlConfigManager manager) {
-      super(manager);
+      this.manager = manager;
     }
     
     @Override
     public void executeForPlayer() throws MessageReturn {
-      CommandSender sender = ((PaperSender) sender()).getCommandSender();
-      
-      Logger.getLogger(sender.getName()).log(Level.INFO, "Инициировал перезагрузку конфигов");
-      manager.reloadByCommand(sender);
+      Logger.getLogger(sender().getName()).log(Level.INFO, "Инициировал перезагрузку конфигов");
+      manager.reloadByCommand(sender());
     }
   }
 }
