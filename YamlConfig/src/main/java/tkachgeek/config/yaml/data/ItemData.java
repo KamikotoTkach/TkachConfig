@@ -7,7 +7,9 @@ import tkachgeek.config.minilocale.MessageArr;
 import tkachgeek.config.minilocale.Placeholders;
 import tkachgeek.tkachutils.items.ItemBuilder;
 
-public class ItemData {
+import java.io.Serializable;
+
+public class ItemData implements Serializable {
   Material material;
   Message name;
   MessageArr description;

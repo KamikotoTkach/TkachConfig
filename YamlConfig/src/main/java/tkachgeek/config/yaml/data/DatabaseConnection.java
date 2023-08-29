@@ -1,11 +1,12 @@
 package tkachgeek.config.yaml.data;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Optional;
 
-public class DatabaseConnection {
+public class DatabaseConnection implements Serializable {
   String url = "jdbc:mysql://localhost:3306/db_name?useSSL=false";
   String user = "root";
   String password = "root";

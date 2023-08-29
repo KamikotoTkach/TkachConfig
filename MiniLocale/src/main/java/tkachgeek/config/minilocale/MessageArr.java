@@ -5,11 +5,12 @@ import net.kyori.adventure.text.Component;
 import tkachgeek.config.minilocale.wrapper.adventure.MiniMessageWrapper;
 import tkachgeek.tkachutils.collections.CollectionUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class MessageArr {
+public class MessageArr implements Serializable {
   String[] message;
   
   public MessageArr(String... message) {

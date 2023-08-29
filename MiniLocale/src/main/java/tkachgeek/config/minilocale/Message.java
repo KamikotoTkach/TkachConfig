@@ -17,10 +17,11 @@ import tkachgeek.config.minilocale.wrapper.papi.PapiWrapper;
 import tkachgeek.tkachutils.collections.CollectionUtils;
 import tkachgeek.tkachutils.messages.TargetableMessageReturn;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.UUID;
 
-public class Message {
+public class Message implements Serializable {
   protected String message;
   
   public Message() {
