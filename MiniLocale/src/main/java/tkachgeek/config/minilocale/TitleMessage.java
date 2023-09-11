@@ -27,6 +27,6 @@ public class TitleMessage implements Serializable{
   }
   
   public void show(Player player) {
-    player.showTitle(Title.title(title.get(player), subtitle.get(player), Title.Times.times(Duration.ofMillis(fadeIn), Duration.ofMillis(stay), Duration.ofMillis(fadeOut))));
+    player.showTitle(Title.title(title.get(player), subtitle.get(player), Title.Times.of(Duration.ofMillis(fadeIn), Duration.ofMillis(stay), Duration.ofMillis(fadeOut))));
   }
 }
