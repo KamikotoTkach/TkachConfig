@@ -6,9 +6,9 @@ import org.bukkit.entity.Player;
 import java.io.Serializable;
 import java.time.Duration;
 
-public class TitleMessage implements Serializable {
-  Message title;
-  Message subtitle;
+public class TitleMessage implements Serializable{
+  Message title = null;
+  Message subtitle = null;
   int fadeIn = 100;
   int stay = 1500;
   int fadeOut = 300;

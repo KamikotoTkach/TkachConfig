@@ -3,7 +3,6 @@ package tkachgeek.config.yaml;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -15,9 +14,9 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.yaml.snakeyaml.LoaderOptions;
 import tkachgeek.config.base.Config;
 import tkachgeek.config.base.Reloadable;
 import tkachgeek.config.base.Utils;
@@ -50,13 +49,7 @@ public class YmlConfigManager {
     this.plugin = plugin;
     this.logger = plugin.getLogger();
     
-    LoaderOptions loaderOptions = new LoaderOptions();
-    loaderOptions.setCodePointLimit(maxConfigSizeBytes);
-    
-    YAMLFactory yaml = YAMLFactory.builder()
-                                  .disable(YAMLGenerator.Feature.SPLIT_LINES)
-                                  .loaderOptions(loaderOptions)
-                                  .build();
+    YAMLFactory yaml = new YAMLFactory().disable(YAMLGenerator.Feature.SPLIT_LINES);
     
     mapper = new ObjectMapper(yaml);
     
@@ -66,7 +59,6 @@ public class YmlConfigManager {
     mapper.setVisibility(PropertyAccessor.SETTER, JsonAutoDetect.Visibility.NONE);
     mapper.setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE);
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true);
     
     SimpleModule module = new SimpleModule("TkachGeekModules");
     
@@ -89,8 +81,6 @@ public class YmlConfigManager {
     module.addSerializer(MessageArr.class, new MessageArrSerializer());
     
     module(module);
-    
-    module(JacksonPaper.builder().build());
   }
   
   public void module(Module module) {

@@ -2,11 +2,7 @@ package tkachgeek.config.minilocale.wrapper.adventure;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.Tag;
-import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import tkachgeek.config.minilocale.Placeholders;
 
@@ -15,14 +11,9 @@ import java.util.List;
 
 public class MiniMessageWrapper {
   
-  private static final MiniMessage mm = MiniMessage.builder()
-                                                   .editTags(x -> x.tag("legacy", MiniMessageWrapper::getLegacyTagFormatter))
-                                                   .build();
+  private static final MiniMessage mm = MiniMessage.get();
   
-  private static Tag getLegacyTagFormatter(ArgumentQueue aq, Context ctx) {
-    return Tag.selfClosingInserting(LegacyComponentSerializer.legacyAmpersand().deserialize(aq.popOr("").value()));
-  }
-  
+  //todo: implement legacy parser to minimessage
   public static String serialize(Component component) {
     return mm.serialize(component);
   }
@@ -87,11 +78,11 @@ public class MiniMessageWrapper {
   }
   
   public static Component deserialize(String string, Placeholders placeholders) {
-    return mm.deserialize(replaceSection(string), placeholders.getResolvers());
+    return mm.parse(replaceSection(string), placeholders.getResolvers());
   }
   
   public static Component deserialize(String string, Placeholders placeholders, boolean disableItalic) {
-    Component deserialized = mm.deserialize(replaceSection(string), placeholders.getResolvers());
+    Component deserialized = mm.parse(replaceSection(string), placeholders.getResolvers());
     
     if (disableItalic) {
       return deserialized.decoration(TextDecoration.ITALIC, false);
@@ -106,7 +97,7 @@ public class MiniMessageWrapper {
     TextDecoration italicDecoration = TextDecoration.ITALIC;
     
     for (String s : strings) {
-      Component deserialized = mm.deserialize(replaceSection(s), placeholders.getResolvers());
+      Component deserialized = mm.parse(replaceSection(s), placeholders.getResolvers());
       
       if (disableItalic) {
         deserialized = deserialized.decoration(italicDecoration, false);
