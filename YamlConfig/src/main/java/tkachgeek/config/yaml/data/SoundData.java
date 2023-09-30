@@ -11,26 +11,23 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 
 public class SoundData implements Serializable {
-  private final String name;
   private final String sound;
   private final float volume;
   private final float pitch;
 
   @JsonCreator
   public SoundData(
-        @JsonProperty("name") @NotNull final String name,
         @JsonProperty("sound") @NotNull final String sound,
         @JsonProperty("volume") final float volume,
         @JsonProperty("pitch") final float pitch
   ) {
-    this.name = name;
     this.sound = sound;
     this.volume = volume;
     this.pitch = pitch;
   }
 
-  public String getName() {
-    return this.name;
+  public String getSound() {
+    return sound;
   }
 
   public Sound.Builder getSoundBuilder() {
