@@ -14,10 +14,12 @@ import tkachgeek.config.minilocale.wrapper.adventure.MiniMessageWrapper;
 import tkachgeek.config.minilocale.wrapper.papi.PapiWrapper;
 import tkachgeek.tkachutils.collections.CollectionUtils;
 import tkachgeek.tkachutils.messages.TargetableMessageReturn;
+import tkachgeek.tkachutils.text.component.LegacyComponentUtil;
 
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class Message implements Serializable {
   protected String message;
@@ -309,5 +311,26 @@ public class Message implements Serializable {
 
   public String serialize() {
     return message;
+  }
+
+  public static Message parse(String message) {
+    Mode mode;
+    if (isAmpersand(message)) {
+      mode = Mode.LEGACY_AMPERSAND;
+    } else if (isSection(message)) {
+      mode = Mode.LEGACY_SECTION;
+    } else {
+      mode = Mode.MINI_MESSAGE;
+    }
+
+    return new Message(message, mode);
+  }
+
+  private static boolean isAmpersand(String message) {
+    return Pattern.compile("&[\\d#abcdefklmnrx]").matcher(message).find();
+  }
+
+  private static boolean isSection(String message) {
+    return Pattern.compile("§[\\d#abcdefklmnrx]").matcher(message).find();
   }
 }
