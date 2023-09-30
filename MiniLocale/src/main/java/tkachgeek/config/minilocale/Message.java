@@ -14,7 +14,6 @@ import tkachgeek.config.minilocale.wrapper.adventure.MiniMessageWrapper;
 import tkachgeek.config.minilocale.wrapper.papi.PapiWrapper;
 import tkachgeek.tkachutils.collections.CollectionUtils;
 import tkachgeek.tkachutils.messages.TargetableMessageReturn;
-import tkachgeek.tkachutils.text.component.LegacyComponentUtil;
 
 import java.io.Serializable;
 import java.util.Iterator;
