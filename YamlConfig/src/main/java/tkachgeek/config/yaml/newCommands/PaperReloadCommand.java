@@ -29,7 +29,7 @@ public class PaperReloadCommand {
     
     @Override
     public void executeForPlayer() throws MessageReturn {
-      Audience audience = sender.getAudience();
+      Audience audience = sender();
       
       if (audience instanceof CommandSender) {
         Logger.getLogger(((CommandSender) audience).getName()).log(Level.INFO, "Инициировал перезагрузку конфига " + argS(0));

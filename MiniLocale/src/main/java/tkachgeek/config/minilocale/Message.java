@@ -34,11 +34,18 @@ public class Message implements Serializable {
   public Message(Mode mode, String... message) {
     this(CollectionUtils.toString(message, "", "\n", true), mode);
   }
-  
+
   public Message(String message) {
     this.message = message;
   }
 
+  public Message(Component message) {
+    this.message = LegacyComponentSerializer.legacySection().serialize(message);
+  }
+
+  public Message(Mode mode, String... message) {
+    this(CollectionUtils.toString(message, "", "\n", true), mode);
+  }
   
   public Message(String message, Mode mode) {
     this.message = message;
@@ -62,7 +69,7 @@ public class Message implements Serializable {
   public void send(MessageDirection direction, Audience audience) {
     if (audience instanceof ForwardingAudience) {
       ForwardingAudience fw = (ForwardingAudience) audience;
-      
+
       fw.audiences().forEach(x -> {
         if (x instanceof CommandSender) {
           direction.send(x, get((CommandSender) x));
@@ -92,7 +99,7 @@ public class Message implements Serializable {
   public void send(MessageDirection direction, Audience audience, Placeholders placeholders) {
     if (audience instanceof ForwardingAudience) {
       ForwardingAudience fw = (ForwardingAudience) audience;
-      
+
       fw.audiences().forEach(x -> {
         if (x instanceof CommandSender) {
           direction.send(x, get(placeholders, (CommandSender) x));
@@ -110,7 +117,7 @@ public class Message implements Serializable {
   }
   
   public void send(MessageDirection direction, Iterator<? extends Audience> audiences) {
-    
+
     audiences.forEachRemaining(audience -> {
       if (audience instanceof ForwardingAudience) {
         ForwardingAudience fw = (ForwardingAudience) audiences;
@@ -191,8 +198,8 @@ public class Message implements Serializable {
     send(ChatDirection.INSTANCE, AudienceWrapper.onlinePlayers());
   }
   
-  
-  
+
+
   public void send(UUID maybeOfflinePlayer, Placeholders placeholders) {
     if (Bukkit.getPlayer(maybeOfflinePlayer) != null) {
       send(Bukkit.getPlayer(maybeOfflinePlayer), placeholders);
@@ -230,19 +237,19 @@ public class Message implements Serializable {
   public Component get() {
     return MiniMessageWrapper.deserialize(message);
   }
-  
+
   public Component get(CommandSender receiver) {
     return MiniMessageWrapper.deserialize(PapiWrapper.process(message, receiver));
   }
-  
+
   public Component get(Placeholders placeholders) {
     return MiniMessageWrapper.deserialize(message, placeholders);
   }
-  
+
   public Component get(Placeholders placeholders, CommandSender receiver) {
     return MiniMessageWrapper.deserialize(PapiWrapper.process(message, receiver), placeholders);
   }
-  
+
   public String getLegacy() {
     return LegacyComponentSerializer.legacyAmpersand().serialize(get());
   }
