@@ -46,6 +46,6 @@ public class SoundData implements Serializable {
   }
 
   public void play(@NotNull final Location location) {
-    location.getWorld().playSound(this.builder().build());
+    location.getWorld().playSound(location, this.sound, this.volume, this.pitch);
   }
 }
