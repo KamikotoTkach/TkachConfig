@@ -30,18 +30,22 @@ public class SoundData implements Serializable {
     return sound;
   }
 
-  public Sound.Builder getSoundBuilder() {
+  public Sound sound(@NotNull final Sound.Source source) {
+    return Sound.sound(Key.key(this.sound), source, this.volume, this.pitch);
+  }
+
+  public Sound.Builder builder() {
     return Sound.sound()
                 .type(Key.key(this.sound))
-                .volume(volume)
-                .pitch(pitch);
+                .volume(this.volume)
+                .pitch(this.pitch);
   }
 
   public void play(@NotNull final Player player) {
-    player.playSound(this.getSoundBuilder().build());
+    player.playSound(this.builder().build());
   }
 
   public void play(@NotNull final Location location) {
-    location.getWorld().playSound(this.getSoundBuilder().build());
+    location.getWorld().playSound(this.builder().build());
   }
 }
