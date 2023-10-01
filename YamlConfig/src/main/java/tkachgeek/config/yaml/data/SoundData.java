@@ -7,6 +7,7 @@ import net.kyori.adventure.sound.Sound;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import tkachgeek.tkachutils.sound.SoundUtils;
 
 import java.io.Serializable;
 
@@ -46,6 +47,6 @@ public class SoundData implements Serializable {
   }
 
   public void play(@NotNull final Location location) {
-    location.getWorld().playSound(location, this.sound, this.volume, this.pitch);
+    location.getWorld().playSound(location, SoundUtils.parse(this.sound), this.volume, this.pitch);
   }
 }
