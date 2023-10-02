@@ -79,13 +79,13 @@
     <dependencies>
         <dependency>
             <groupId>tkachgeek</groupId>
-            <artifactId>MiniLocale</artifactId>
+            <artifactId>MiniLocaleOld</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>tkachgeek</groupId>
-            <artifactId>yaml</artifactId>
+            <artifactId>yamlOld</artifactId>
             <version>1.1</version>
             <scope>compile</scope>
         </dependency>
