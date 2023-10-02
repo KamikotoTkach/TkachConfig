@@ -1,0 +1,6 @@
+name: Config
+main: tkachgeek.config.base.Main
+version: 3.1
+api-version: 1.16
+authors: [ TkachGeek, Soul_KRT ]
+website: https://cwcode.ru/
