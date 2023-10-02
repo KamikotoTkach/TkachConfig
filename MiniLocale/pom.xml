@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>TkachGeek</groupId>
-    <artifactId>MiniLocale</artifactId>
+    <artifactId>MiniLocaleOld</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>MiniLocale</name>
+    <name>MiniLocaleOld</name>
 
     <properties>
         <java.version>11</java.version>
