@@ -9,7 +9,7 @@
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>Config</name>
+    <name>ConfigOld</name>
 
     <properties>
         <java.version>11</java.version>
