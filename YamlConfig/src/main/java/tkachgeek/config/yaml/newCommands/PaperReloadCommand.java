@@ -7,7 +7,6 @@ import ru.cwcode.commands.Command;
 import ru.cwcode.commands.arguments.ExactStringArg;
 import ru.cwcode.commands.paperplatform.executor.Executor;
 import tkachgeek.config.yaml.YmlConfigManager;
-import tkachgeek.tkachutils.messages.MessageReturn;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,7 +19,7 @@ public class PaperReloadCommand {
     );
   }
   
-  private static class ConfigReload extends Executor {
+  public static class ConfigReload extends Executor {
     YmlConfigManager manager;
     
     public ConfigReload(YmlConfigManager manager) {
@@ -28,7 +27,7 @@ public class PaperReloadCommand {
     }
     
     @Override
-    public void executeForPlayer() throws MessageReturn {
+    public void executeForPlayer() {
       Audience audience = sender();
       
       if (audience instanceof CommandSender) {
@@ -39,13 +38,13 @@ public class PaperReloadCommand {
     }
   }
   
-  private static class ConfigReloadAll extends ConfigReload {
+  public static class ConfigReloadAll extends ConfigReload {
     public ConfigReloadAll(YmlConfigManager manager) {
       super(manager);
     }
     
     @Override
-    public void executeForPlayer() throws MessageReturn {
+    public void executeForPlayer() {
       Audience audience = sender.getAudience();
       
       if (audience instanceof CommandSender) {

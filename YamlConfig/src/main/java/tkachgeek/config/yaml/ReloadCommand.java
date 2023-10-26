@@ -17,7 +17,7 @@ public class ReloadCommand {
     );
   }
   
-  private static class ConfigReload extends Executor {
+  public static class ConfigReload extends Executor {
     YmlConfigManager manager;
     
     public ConfigReload(YmlConfigManager manager) {
@@ -32,7 +32,7 @@ public class ReloadCommand {
     }
   }
   
-  private static class ConfigReloadAll extends Executor {
+  public static class ConfigReloadAll extends Executor {
     YmlConfigManager manager;
     
     public ConfigReloadAll(YmlConfigManager manager) {

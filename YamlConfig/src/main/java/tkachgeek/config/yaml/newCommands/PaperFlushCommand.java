@@ -11,6 +11,7 @@ import tkachgeek.tkachutils.messages.MessageReturn;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Deprecated
 public class PaperFlushCommand {
   public static Command get(YmlConfigManager manager) {
     return new Command("flush", "$*").arguments(
@@ -18,6 +19,7 @@ public class PaperFlushCommand {
     );
   }
   
+  @Deprecated
   private static class ConfigFlush extends Executor {
     YmlConfigManager manager;
     

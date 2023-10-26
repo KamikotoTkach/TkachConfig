@@ -15,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 import tkachgeek.config.base.Config;
 import tkachgeek.config.base.Reloadable;
 import tkachgeek.config.base.Utils;
@@ -29,7 +30,9 @@ import java.io.StringWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -40,7 +43,7 @@ public class YmlConfigManager {
   Logger logger;
   
   public YmlConfigManager(JavaPlugin plugin) {
-    this(plugin, 10 * 1024 * 1024);
+    this(plugin, -1); //указание макс размера в старом конфиге не работает, ограничено версией SnakeYML
   }
   
   public YmlConfigManager(JavaPlugin plugin, int maxConfigSizeBytes) {
@@ -222,7 +225,9 @@ public class YmlConfigManager {
     return writer.toString();
   }
   
-  public void reloadByCommand(Audience out) {
+  public List<Config> reloadByCommand(Audience out) {
+    List<Config> reloaded = new ArrayList<>();
+    
     for (Config config : configs.values()) {
       if (config instanceof Reloadable) {
         
@@ -230,14 +235,18 @@ public class YmlConfigManager {
         
         try {
           ((Reloadable) config).reload();
+          reloaded.add(config);
+          
+          out.sendMessage(Component.text("Перезагрузка конфига " + config.path + ".yml прошла успешно"));
         } catch (Exception e) {
           out.sendMessage(Component.text("Перезагрузка конфига " + config.path + ".yml не удалась: " + e.getMessage()));
         }
-        out.sendMessage(Component.text("Перезагрузка конфига " + config.path + ".yml прошла успешно"));
       }
     }
+    return reloaded;
   }
   
+  @Deprecated
   public void flush(String configName, Audience out) {
     Utils.writeString(getPath(configName), "");
     
@@ -246,11 +255,11 @@ public class YmlConfigManager {
     out.sendMessage(Component.text("Файл " + configName + ".yml очищен"));
   }
   
-  public void reloadByCommand(String name, Audience out) {
+  public @Nullable Config reloadByCommand(String name, Audience out) {
     Optional<Config> optConfig = getByName(name);
     if (optConfig.isEmpty()) {
       out.sendMessage(Component.text("Конфик с именем " + name + " не найден или ещё не был загружен"));
-      return;
+      return null;
     }
     
     Config config = optConfig.get();
@@ -261,14 +270,17 @@ public class YmlConfigManager {
       
       try {
         ((Reloadable) config).reload();
+        
+        out.sendMessage(Component.text("Перезагрузка конфига " + config.path + ".yml прошла успешно"));
+        
+        return config;
       } catch (Exception e) {
         out.sendMessage(Component.text("Перезагрузка конфига " + config.path + ".yml не удалась: " + e.getMessage()));
       }
-      
-      out.sendMessage(Component.text("Перезагрузка конфига " + config.path + ".yml прошла успешно"));
     } else {
       out.sendMessage(Component.text("Конфиг " + name + " не может быть перезагружен"));
     }
+    return null;
   }
   
   public Optional<Config> getByName(String name) {
