@@ -1,6 +1,7 @@
 package tkachgeek.config.yaml;
 
 import org.bukkit.command.CommandSender;
+import ru.cwcode.commands.arguments.spaced.SpacedArgument;
 import tkachgeek.commands.command.Argument;
 import tkachgeek.config.base.Config;
 import tkachgeek.config.base.Reloadable;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ConfigsArg extends Argument {
+public class ConfigsArg extends Argument implements SpacedArgument {
   YmlConfigManager manager;
   
   public ConfigsArg(YmlConfigManager manager) {
