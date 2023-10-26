@@ -20,7 +20,7 @@ public class PaperReloadCommand {
   }
   
   public static class ConfigReload extends Executor {
-    YmlConfigManager manager;
+    protected YmlConfigManager manager;
     
     public ConfigReload(YmlConfigManager manager) {
       this.manager = manager;

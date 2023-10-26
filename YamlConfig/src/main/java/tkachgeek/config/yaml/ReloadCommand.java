@@ -18,7 +18,7 @@ public class ReloadCommand {
   }
   
   public static class ConfigReload extends Executor {
-    YmlConfigManager manager;
+    protected YmlConfigManager manager;
     
     public ConfigReload(YmlConfigManager manager) {
       this.manager = manager;
@@ -32,11 +32,11 @@ public class ReloadCommand {
     }
   }
   
-  public static class ConfigReloadAll extends Executor {
-    YmlConfigManager manager;
+  public static class ConfigReloadAll extends ConfigReload {
+    protected YmlConfigManager manager;
     
     public ConfigReloadAll(YmlConfigManager manager) {
-      this.manager = manager;
+      super(manager);
     }
     
     @Override
