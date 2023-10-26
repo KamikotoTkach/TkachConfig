@@ -7,6 +7,7 @@ import tkachgeek.config.base.Reloadable;
 import tkachgeek.config.yaml.YmlConfigManager;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public class PaperConfigsArg extends Argument {
   }
   
   @Override
-  public List<String> completions(Sender commandSender) {
+  public Collection<String> completions(Sender commandSender) {
     List<String> configList = new ArrayList<>();
     
     for (Map.Entry<String, Config> cfgEntry : manager.configs.entrySet()) {
