@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class YmlConfigManager {
   public HashMap<String, Config> configs = new HashMap<>();
@@ -226,24 +227,29 @@ public class YmlConfigManager {
   }
   
   public List<Config> reloadByCommand(Audience out) {
-    List<Config> reloaded = new ArrayList<>();
+    List<String> reloaded = new ArrayList<>();
     
-    for (Config config : configs.values()) {
+    for (var config : configs.entrySet()) {
       if (config instanceof Reloadable) {
         
-        out.sendMessage(Component.text("Перезагрузка конфига " + config.path + ".yml"));
+        out.sendMessage(Component.text("Перезагрузка конфига " + config.getValue().path + ".yml"));
         
         try {
           ((Reloadable) config).reload();
-          reloaded.add(config);
+          reloaded.add(config.getKey());
           
-          out.sendMessage(Component.text("Перезагрузка конфига " + config.path + ".yml прошла успешно"));
+          out.sendMessage(Component.text("Перезагрузка конфига " + config.getValue().path + ".yml прошла успешно"));
         } catch (Exception e) {
-          out.sendMessage(Component.text("Перезагрузка конфига " + config.path + ".yml не удалась: " + e.getMessage()));
+          out.sendMessage(Component.text("Перезагрузка конфига " + config.getValue().path + ".yml не удалась: " + e.getMessage()));
         }
       }
     }
-    return reloaded;
+    
+    return reloaded.stream()
+                   .map(this::getByName)
+                   .filter(Optional::isPresent)
+                   .map(Optional::get)
+                   .collect(Collectors.toList());
   }
   
   @Deprecated
@@ -273,7 +279,7 @@ public class YmlConfigManager {
         
         out.sendMessage(Component.text("Перезагрузка конфига " + config.path + ".yml прошла успешно"));
         
-        return config;
+        return getByName(name).orElse(null);
       } catch (Exception e) {
         out.sendMessage(Component.text("Перезагрузка конфига " + config.path + ".yml не удалась: " + e.getMessage()));
       }

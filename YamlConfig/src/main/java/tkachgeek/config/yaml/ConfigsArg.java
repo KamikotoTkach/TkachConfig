@@ -1,8 +1,8 @@
 package tkachgeek.config.yaml;
 
 import org.bukkit.command.CommandSender;
-import ru.cwcode.commands.arguments.spaced.SpacedArgument;
 import tkachgeek.commands.command.Argument;
+import tkachgeek.commands.command.arguments.spaced.SpacedArgument;
 import tkachgeek.config.base.Config;
 import tkachgeek.config.base.Reloadable;
 
