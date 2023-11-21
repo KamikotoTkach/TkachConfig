@@ -146,10 +146,6 @@ public class YmlConfigManager {
     return config;
   }
   
-  Path getPath(String path) {
-    return Paths.get(plugin.getDataFolder().toString() + File.separatorChar + path + ".yml");
-  }
-  
   public void store(String path, YmlConfig object, boolean async) {
     if (async) {
       Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> store(path, object));
@@ -167,7 +163,23 @@ public class YmlConfigManager {
       e.printStackTrace();
     }
     
-    Utils.writeString(getPath(path), writer.toString());
+    String serialized = writer.toString();
+    
+    String[] header = object.header();
+    if (header != null) {
+      serialized = CollectionUtils.toString(header, "#", "\n", false) + serialized;
+    }
+    
+    for (var descriptionEntry : Arrays.stream(object.getClass().getDeclaredFields())
+                                      .filter(x -> x.isAnnotationPresent(Description.class))
+                                      .collect(Collectors.toMap(Field::getName, o -> o.getAnnotation(Description.class).value()))
+                                      .entrySet()) {
+      
+      serialized = serialized.replaceFirst("(\n" + descriptionEntry.getKey() + ")",
+                                           CollectionUtils.toString(descriptionEntry.getValue(), "\n#", "", false) + "$1");
+    }
+    
+    Utils.writeString(getPath(path), serialized);
   }
   
   public void storeAll() {
@@ -227,29 +239,24 @@ public class YmlConfigManager {
   }
   
   public List<Config> reloadByCommand(Audience out) {
-    List<String> reloaded = new ArrayList<>();
+    List<Config> reloaded = new ArrayList<>();
     
-    for (var config : configs.entrySet()) {
+    for (Config config : configs.values()) {
       if (config instanceof Reloadable) {
         
-        out.sendMessage(Component.text("Перезагрузка конфига " + config.getValue().path + ".yml"));
+        out.sendMessage(Component.text("Перезагрузка конфига " + config.path + ".yml"));
         
         try {
           ((Reloadable) config).reload();
-          reloaded.add(config.getKey());
+          reloaded.add(config);
           
-          out.sendMessage(Component.text("Перезагрузка конфига " + config.getValue().path + ".yml прошла успешно"));
+          out.sendMessage(Component.text("Перезагрузка конфига " + config.path + ".yml прошла успешно"));
         } catch (Exception e) {
-          out.sendMessage(Component.text("Перезагрузка конфига " + config.getValue().path + ".yml не удалась: " + e.getMessage()));
+          out.sendMessage(Component.text("Перезагрузка конфига " + config.path + ".yml не удалась: " + e.getMessage()));
         }
       }
     }
-    
-    return reloaded.stream()
-                   .map(this::getByName)
-                   .filter(Optional::isPresent)
-                   .map(Optional::get)
-                   .collect(Collectors.toList());
+    return reloaded;
   }
   
   @Deprecated
@@ -279,7 +286,7 @@ public class YmlConfigManager {
         
         out.sendMessage(Component.text("Перезагрузка конфига " + config.path + ".yml прошла успешно"));
         
-        return getByName(name).orElse(null);
+        return getByName(name).orElse(null); //потому что config - это старый инстанс
       } catch (Exception e) {
         out.sendMessage(Component.text("Перезагрузка конфига " + config.path + ".yml не удалась: " + e.getMessage()));
       }
@@ -303,6 +310,10 @@ public class YmlConfigManager {
     } else {
       Bukkit.getScheduler().runTaskTimer(plugin, (silent ? this::autosaveSilent : this::autosave), ticks, ticks);
     }
+  }
+  
+  Path getPath(String path) {
+    return Paths.get(plugin.getDataFolder().toString() + File.separatorChar + path + ".yml");
   }
   
   private void autosaveSilent() {
