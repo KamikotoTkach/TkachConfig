@@ -16,6 +16,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
+import org.yaml.snakeyaml.LoaderOptions;
 import tkachgeek.config.Description;
 import tkachgeek.config.base.Config;
 import tkachgeek.config.base.Reloadable;
@@ -51,7 +52,10 @@ public class YmlConfigManager {
     this.plugin = plugin;
     this.logger = plugin.getLogger();
     
-    YAMLFactory yaml = new YAMLFactory().disable(YAMLGenerator.Feature.SPLIT_LINES);
+    YAMLFactory yaml = YAMLFactory.builder()
+                                  .disable(YAMLGenerator.Feature.SPLIT_LINES)
+                                  .loaderOptions(new LoaderOptions())
+                                  .build();
     
     mapper = new ObjectMapper(yaml);
     
