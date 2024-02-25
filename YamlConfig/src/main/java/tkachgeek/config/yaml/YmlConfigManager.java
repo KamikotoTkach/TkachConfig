@@ -3,6 +3,7 @@ package tkachgeek.config.yaml;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -65,6 +66,7 @@ public class YmlConfigManager {
     mapper.setVisibility(PropertyAccessor.SETTER, JsonAutoDetect.Visibility.NONE);
     mapper.setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE);
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true);
     
     SimpleModule module = new SimpleModule("TkachGeekModules");
     

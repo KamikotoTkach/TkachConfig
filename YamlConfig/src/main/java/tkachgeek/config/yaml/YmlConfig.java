@@ -11,6 +11,11 @@ public abstract class YmlConfig extends Config {
   }
   
   @Override
+  public void store(boolean async) {
+    manager.store(path, this, async);
+  }
+  
+  @Override
   public void store(String path) {
     manager.store(path, this);
   }

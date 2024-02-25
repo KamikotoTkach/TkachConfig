@@ -3,7 +3,6 @@ package tkachgeek.config.minilocale;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import tkachgeek.config.minilocale.wrapper.adventure.MiniMessageWrapper;
-import tkachgeek.tkachutils.collections.CollectionUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public class MessageArr implements Serializable {
   }
   
   public Message toSingleMessage() {
-    return new Message(CollectionUtils.toString(message, "", "\n", true));
+    return new Message(message);
   }
   
   public List<String> toList() {

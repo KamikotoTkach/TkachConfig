@@ -10,6 +10,7 @@ public abstract class Config {
   
   abstract public void store();
   
+  abstract public void store(boolean async);
   abstract public void store(String path);
   
   abstract public void store(String path, boolean async);
