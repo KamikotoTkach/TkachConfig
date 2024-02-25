@@ -1,9 +1,10 @@
 package tkachgeek.config.minilocale;
 
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.audience.ForwardingAudience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -23,7 +24,7 @@ public class Message implements Serializable {
   public static final Pattern LEGACY_AMPERSAND = Pattern.compile("&[\\d#abcdefklmnrx]");
   public static final Pattern LEGACY_SECTION = Pattern.compile("§[\\d#abcdefklmnrx]");
   protected String message;
-  
+  public static Placeholders EMPTY_PLACEHOLDERS = new Placeholders();
   //region constructors
   public Message() {
   }
@@ -61,47 +62,40 @@ public class Message implements Serializable {
   //endregion
   
   //region base send methods
+  
   public void send(MessageDirection direction, Audience audience) {
-    audience.forEachAudience(x -> {
-      if (x instanceof CommandSender) {
-        direction.send(x, get((CommandSender) x));
-      } else {
-        direction.send(x, get());
-      }
-    });
+    send(direction, audience, EMPTY_PLACEHOLDERS);
   }
   
   public void send(MessageDirection direction, Iterable<? extends Audience> audiences) {
     for (Audience audience : audiences) {
-      audience.forEachAudience(item -> {
-        if (audience instanceof CommandSender) {
-          direction.send(item, get((CommandSender) item));
-        } else {
-          direction.send(item, get());
-        }
-      });
+      send(direction, audience);
     }
   }
   
   public void send(MessageDirection direction, Audience audience, Placeholders placeholders) {
-    audience.forEachAudience(x -> {
-      if (x instanceof CommandSender) {
-        direction.send(x, get(placeholders, (CommandSender) x));
+    if (audience instanceof ForwardingAudience) {
+      ForwardingAudience fw = (ForwardingAudience) audience;
+      
+      fw.audiences().forEach(x -> {
+        if (x instanceof CommandSender) {
+          direction.send(x, get((CommandSender) x, placeholders));
+        } else {
+          direction.send(x, get(placeholders));
+        }
+      });
+    } else {
+      if (audience instanceof CommandSender) {
+        direction.send(audience, get((CommandSender) audience, placeholders));
       } else {
-        direction.send(x, get(placeholders));
+        direction.send(audience, get(placeholders));
       }
-    });
+    }
   }
   
   public void send(MessageDirection direction, Iterable<? extends Audience> audiences, Placeholders placeholders) {
     for (Audience audience : audiences) {
-      audience.forEachAudience(item -> {
-        if (audience instanceof CommandSender) {
-          direction.send(item, get(placeholders, (CommandSender) item));
-        } else {
-          direction.send(item, get(placeholders));
-        }
-      });
+      send(direction, audience, placeholders);
     }
   }
   //endregion
@@ -288,19 +282,19 @@ public class Message implements Serializable {
   }
   
   public String getText() {
-    return PlainTextComponentSerializer.plainText().serialize(get());
+    return PlainComponentSerializer.plain().serialize(get());
   }
   
   public String getText(CommandSender receiver) {
-    return PlainTextComponentSerializer.plainText().serialize(get(receiver));
+    return PlainComponentSerializer.plain().serialize(get(receiver));
   }
   
   public String getText(Placeholders placeholders) {
-    return PlainTextComponentSerializer.plainText().serialize(get(placeholders));
+    return PlainComponentSerializer.plain().serialize(get(placeholders));
   }
   
   public String getText(Placeholders placeholders, CommandSender receiver) {
-    return PlainTextComponentSerializer.plainText().serialize(get(placeholders, receiver));
+    return PlainComponentSerializer.plain().serialize(get(placeholders, receiver));
   }
   
   public String serialize() {
