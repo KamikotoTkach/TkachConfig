@@ -46,16 +46,19 @@ public class YmlConfigManager {
   Logger logger;
   
   public YmlConfigManager(JavaPlugin plugin) {
-    this(plugin, -1); //указание макс размера в старом конфиге не работает, ограничено версией SnakeYML
+    this(plugin, 50 * 1024 * 1024);
   }
   
   public YmlConfigManager(JavaPlugin plugin, int maxConfigSizeBytes) {
     this.plugin = plugin;
     this.logger = plugin.getLogger();
     
+    LoaderOptions loaderOptions = new LoaderOptions();
+    loaderOptions.setCodePointLimit(maxConfigSizeBytes);
+    
     YAMLFactory yaml = YAMLFactory.builder()
                                   .disable(YAMLGenerator.Feature.SPLIT_LINES)
-                                  .loaderOptions(new LoaderOptions())
+                                  .loaderOptions(loaderOptions)
                                   .build();
     
     mapper = new ObjectMapper(yaml);
