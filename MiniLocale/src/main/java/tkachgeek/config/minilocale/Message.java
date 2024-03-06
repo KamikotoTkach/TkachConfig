@@ -17,7 +17,6 @@ import tkachgeek.tkachutils.messages.TargetableMessageReturn;
 import tkachgeek.tkachutils.text.component.LegacyComponentUtil;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -82,14 +81,14 @@ public class Message implements Serializable {
       
       fw.audiences().forEach(x -> {
         if (x instanceof CommandSender) {
-          direction.send(x, get((CommandSender) x, placeholders));
+          direction.send(x, get(x, placeholders));
         } else {
           direction.send(x, get(placeholders));
         }
       });
     } else {
       if (audience instanceof CommandSender) {
-        direction.send(audience, get((CommandSender) audience, placeholders));
+        direction.send(audience, get(audience, placeholders));
       } else {
         direction.send(audience, get(placeholders));
       }
@@ -264,12 +263,12 @@ public class Message implements Serializable {
   public String getLegacy(Placeholders placeholders) {
     return LegacyComponentSerializer.legacyAmpersand().serialize(get(placeholders));
   }
-
-  public String getLegacy(CommandSender receiver) {
+  
+  public String getLegacy(Audience receiver) {
     return LegacyComponentSerializer.legacyAmpersand().serialize(get(receiver));
   }
-
-  public String getLegacy(Placeholders placeholders, CommandSender receiver) {
+  
+  public String getLegacy(Placeholders placeholders, Audience receiver) {
     return LegacyComponentSerializer.legacyAmpersand().serialize(get(placeholders, receiver));
   }
 

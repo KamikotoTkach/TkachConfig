@@ -13,9 +13,6 @@ public class Placeholders {
   public Placeholders() {
   }
   
-  public Placeholders() {
-  }
-  
   public Placeholders(String key, String value) {
     add(key, value);
   }
