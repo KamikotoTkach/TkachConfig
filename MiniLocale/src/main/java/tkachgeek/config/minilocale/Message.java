@@ -62,7 +62,6 @@ public class Message implements Serializable {
   //endregion
   
   //region base send methods
-  
   public void send(MessageDirection direction, Audience audience) {
     send(direction, audience, EMPTY_PLACEHOLDERS);
   }
@@ -74,6 +73,8 @@ public class Message implements Serializable {
   }
   
   public void send(MessageDirection direction, Audience audience, Placeholders placeholders) {
+    if (message == null) return;
+    
     if (audience instanceof ForwardingAudience) {
       ForwardingAudience fw = (ForwardingAudience) audience;
       
@@ -109,15 +110,15 @@ public class Message implements Serializable {
     return MiniMessageWrapper.deserialize(message, placeholders);
   }
   
-  public Component get(CommandSender receiver) {
+  public Component get(Audience receiver) {
     return MiniMessageWrapper.deserialize(PapiWrapper.process(message, receiver));
   }
   
-  public Component get(Placeholders placeholders, CommandSender receiver) {
+  public Component get(Placeholders placeholders, Audience receiver) {
     return MiniMessageWrapper.deserialize(PapiWrapper.process(message, receiver), placeholders);
   }
   
-  public Component get(CommandSender receiver, Placeholders placeholders) {
+  public Component get(Audience receiver, Placeholders placeholders) {
     return MiniMessageWrapper.deserialize(PapiWrapper.process(message, receiver), placeholders);
   }
   //endregion
@@ -218,6 +219,11 @@ public class Message implements Serializable {
   public void broadcast(MessageDirection direction, Placeholders placeholders) {
     send(direction, AudienceWrapper.onlinePlayers(), placeholders);
   }
+  
+  public void broadcast(Placeholders placeholders) {
+    send(ChatDirection.INSTANCE, AudienceWrapper.onlinePlayers(), placeholders);
+  }
+  
   //endregion
   
   //region action bar
@@ -273,11 +279,11 @@ public class Message implements Serializable {
     return LegacyComponentSerializer.legacySection().serialize(get(placeholders));
   }
 
-  public String getLegacySection(CommandSender receiver) {
+  public String getLegacySection(Audience receiver) {
     return LegacyComponentSerializer.legacySection().serialize(get(receiver));
   }
 
-  public String getLegacySection(Placeholders placeholders, CommandSender receiver) {
+  public String getLegacySection(Placeholders placeholders, Audience receiver) {
     return LegacyComponentSerializer.legacySection().serialize(get(placeholders, receiver));
   }
   
@@ -285,7 +291,7 @@ public class Message implements Serializable {
     return PlainComponentSerializer.plain().serialize(get());
   }
   
-  public String getText(CommandSender receiver) {
+  public String getText(Audience receiver) {
     return PlainComponentSerializer.plain().serialize(get(receiver));
   }
   
@@ -293,7 +299,7 @@ public class Message implements Serializable {
     return PlainComponentSerializer.plain().serialize(get(placeholders));
   }
   
-  public String getText(Placeholders placeholders, CommandSender receiver) {
+  public String getText(Placeholders placeholders, Audience receiver) {
     return PlainComponentSerializer.plain().serialize(get(placeholders, receiver));
   }
   

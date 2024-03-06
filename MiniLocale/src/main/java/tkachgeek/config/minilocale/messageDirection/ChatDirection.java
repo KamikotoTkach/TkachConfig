@@ -12,6 +12,8 @@ public class ChatDirection extends MessageDirection {
   
   @Override
   public void send(Audience audience, Component message) {
+    if (message == null) return;
+    
     audience.sendMessage(message);
   }
 }

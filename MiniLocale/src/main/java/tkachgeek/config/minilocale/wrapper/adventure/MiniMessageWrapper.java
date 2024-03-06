@@ -39,6 +39,8 @@ public class MiniMessageWrapper {
   }
   
   public static List<Component> deserialize(List<String> strings) {
+    if (strings == null) return null;
+    
     List<Component> components = new ArrayList<>();
     
     for (String s : strings) {
@@ -59,10 +61,14 @@ public class MiniMessageWrapper {
   }
   
   public static Component deserialize(String string) {
+    if (string == null) return null;
+    
     return mm.deserialize(replaceSection(string));
   }
   
   public static Component deserialize(String string, boolean disableItalic) {
+    if (string == null) return null;
+    
     Component deserialized = mm.deserialize(replaceSection(string));
     
     if (disableItalic) {
@@ -78,10 +84,14 @@ public class MiniMessageWrapper {
   }
   
   public static Component deserialize(String string, Placeholders placeholders) {
+    if (string == null) return null;
+    
     return mm.parse(replaceSection(string), placeholders.getResolvers());
   }
   
   public static Component deserialize(String string, Placeholders placeholders, boolean disableItalic) {
+    if (string == null) return null;
+    
     Component deserialized = mm.parse(replaceSection(string), placeholders.getResolvers());
     
     if (disableItalic) {
@@ -92,6 +102,8 @@ public class MiniMessageWrapper {
   }
   
   public static List<Component> deserialize(List<String> strings, Placeholders placeholders, boolean disableItalic) {
+    if (strings == null) return null;
+    
     List<Component> components = new ArrayList<>();
     
     TextDecoration italicDecoration = TextDecoration.ITALIC;

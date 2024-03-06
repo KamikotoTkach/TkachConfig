@@ -12,6 +12,8 @@ public class SubtitleDirection extends MessageDirection {
   
   @Override
   public void send(Audience audience, Component message) {
+    if (message == null) return;
+    
     send(audience, Component.empty(), message, Title.DEFAULT_TIMES);
   }
   

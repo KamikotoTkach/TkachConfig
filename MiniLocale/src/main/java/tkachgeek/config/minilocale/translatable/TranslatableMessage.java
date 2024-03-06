@@ -1,7 +1,7 @@
 package tkachgeek.config.minilocale.translatable;
 
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import tkachgeek.config.minilocale.Message;
 import tkachgeek.config.minilocale.Mode;
@@ -43,16 +43,16 @@ public class TranslatableMessage extends Message {
   }
   
   @Override
-  public Component get(Placeholders placeholders, CommandSender receiver) {
+  public Component get(Placeholders placeholders, Audience receiver) {
     return MiniMessageWrapper.deserialize(PapiWrapper.process(getMessage(receiver), receiver), placeholders);
   }
   
   @Override
-  public Component get(CommandSender receiver) {
+  public Component get(Audience receiver) {
     return MiniMessageWrapper.deserialize(PapiWrapper.process(getMessage(receiver), receiver));
   }
   
-  private String getMessage(CommandSender receiver) {
+  private String getMessage(Audience receiver) {
     if (receiver instanceof Player) {
       String playerLocale = ((Player) receiver).locale().getLanguage();
       if (translates.containsKey(playerLocale)) {

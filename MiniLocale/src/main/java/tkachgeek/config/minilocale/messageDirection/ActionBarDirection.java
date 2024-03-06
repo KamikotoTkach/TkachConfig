@@ -11,6 +11,8 @@ public class ActionBarDirection extends MessageDirection {
   
   @Override
   public void send(Audience audience, Component message) {
+    if (message == null) return;
+    
     audience.sendActionBar(message);
   }
 }

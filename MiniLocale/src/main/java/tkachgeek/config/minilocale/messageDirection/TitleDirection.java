@@ -12,6 +12,8 @@ public class TitleDirection extends MessageDirection {
   
   @Override
   public void send(Audience audience, Component message) {
+    if (message == null) return;
+    
     send(audience, message, Component.empty(), Title.DEFAULT_TIMES);
   }
   
