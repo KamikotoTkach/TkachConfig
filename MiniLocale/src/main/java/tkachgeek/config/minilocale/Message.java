@@ -17,14 +17,16 @@ import tkachgeek.tkachutils.messages.TargetableMessageReturn;
 import tkachgeek.tkachutils.text.component.LegacyComponentUtil;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class Message implements Serializable {
   public static final Pattern LEGACY_AMPERSAND = Pattern.compile("&[\\d#abcdefklmnrx]");
   public static final Pattern LEGACY_SECTION = Pattern.compile("§[\\d#abcdefklmnrx]");
+  private static final Placeholders EMPTY_PLACEHOLDERS = new Placeholders();
   protected String message;
-  public static Placeholders EMPTY_PLACEHOLDERS = new Placeholders();
+  
   //region constructors
   public Message() {
   }
