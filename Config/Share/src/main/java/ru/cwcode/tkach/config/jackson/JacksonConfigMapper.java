@@ -67,6 +67,7 @@ public abstract class JacksonConfigMapper<C extends Config<C>> extends ConfigMap
     mapper.configure(MapperFeature.IGNORE_DUPLICATE_MODULE_REGISTRATIONS,true);
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true);
+    mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
     
     SimpleModule module = new SimpleModule("cwconfigLocale");
     
