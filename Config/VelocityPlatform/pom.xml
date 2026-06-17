@@ -6,7 +6,7 @@
 
     <groupId>ru.cwcode.tkach.config</groupId>
     <artifactId>VelocityConfig</artifactId>
-    <version>2.7.1</version>
+    <version>2.7.2</version>
     <packaging>jar</packaging>
 
     <name>VelocityConfig</name>
@@ -242,7 +242,7 @@
         <dependency>
             <groupId>ru.cwcode.tkach.config</groupId>
             <artifactId>Share</artifactId>
-            <version>2.7.1</version>
+            <version>2.7.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -254,13 +254,13 @@
         <dependency>
             <groupId>ru.cwcode.tkach.locale</groupId>
             <artifactId>MiniLocaleShare</artifactId>
-            <version>2.7.1</version>
+            <version>2.7.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>ru.cwcode.tkach.locale</groupId>
             <artifactId>MiniLocaleVelocity</artifactId>
-            <version>2.7.1</version>
+            <version>2.7.2</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
