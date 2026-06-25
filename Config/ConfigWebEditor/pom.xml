@@ -112,11 +112,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency> <!-- todo: заменить на встроенный клиент, этот 1.5 гб жрёт с нулевой -->
-            <groupId>com.sparkjava</groupId>
-            <artifactId>spark-core</artifactId>
-            <version>2.9.4</version>
-        </dependency>
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper-api</artifactId>

@@ -2,17 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Bundle/CWConfig.iml" filepath="$PROJECT_DIR$/Bundle/CWConfig.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Config/ConfigWebEditor/ConfigWebEditor.iml" filepath="$PROJECT_DIR$/Config/ConfigWebEditor/ConfigWebEditor.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Locale/MiniLocaleNew/MiniLocaleNew.iml" filepath="$PROJECT_DIR$/Locale/MiniLocaleNew/MiniLocaleNew.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Locale/MiniLocaleOld/MiniLocaleOld.iml" filepath="$PROJECT_DIR$/Locale/MiniLocaleOld/MiniLocaleOld.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Locale/PaperShare/MiniLocalePaperShare.iml" filepath="$PROJECT_DIR$/Locale/PaperShare/MiniLocalePaperShare.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Locale/MiniLocaleShare/MiniLocaleShare.iml" filepath="$PROJECT_DIR$/Locale/MiniLocaleShare/MiniLocaleShare.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Locale/MiniLocaleVelocity/MiniLocaleVelocity.iml" filepath="$PROJECT_DIR$/Locale/MiniLocaleVelocity/MiniLocaleVelocity.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Config/PaperPlatform/PaperConfig.iml" filepath="$PROJECT_DIR$/Config/PaperPlatform/PaperConfig.iml" />
       <module fileurl="file://$PROJECT_DIR$/Locale/PaperShare/PaperShare.iml" filepath="$PROJECT_DIR$/Locale/PaperShare/PaperShare.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Config/Share/Share.iml" filepath="$PROJECT_DIR$/Config/Share/Share.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Config/VelocityPlatform/VelocityConfig.iml" filepath="$PROJECT_DIR$/Config/VelocityPlatform/VelocityConfig.iml" />
     </modules>
   </component>
 </project>

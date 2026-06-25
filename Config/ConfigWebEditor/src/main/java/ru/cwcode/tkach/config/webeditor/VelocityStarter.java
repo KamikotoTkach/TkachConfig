@@ -3,6 +3,7 @@ package ru.cwcode.tkach.config.webeditor;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
@@ -33,14 +34,22 @@ public class VelocityStarter {
   @Subscribe
   public void onEnable(ProxyInitializeEvent event) {
     INSTANCE = new WebEditor(new SimpleConfig("config", new VelocityL10nPlatform(this,
-                                                                                dataDirectory,
+                                                                                 dataDirectory,
                                                                                 logger,
                                                                                 server.getPluginManager()
                                                                                       .ensurePluginContainer(this)
                                                                                       .getDescription()
                                                                                       .getSource()
                                                                                       .orElseThrow()
-                                                                                      .toFile())));
+                                                                                       .toFile())));
     INSTANCE.start();
+  }
+  
+  @Subscribe
+  public void onDisable(ProxyShutdownEvent event) {
+    if (INSTANCE != null) {
+      INSTANCE.stop();
+      INSTANCE = null;
+    }
   }
 }

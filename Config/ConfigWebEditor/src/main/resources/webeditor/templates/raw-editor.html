@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="{{basePath}}/editor/raw-editor.css" />
+  </head>
+  <body>
+    <div class="toast-container">
+      <div id="successToast" class="toast">
+        <div class="toast-header success">
+          <strong>✓ Успешно!</strong>
+          <button class="toast-close" data-toast-close>&times;</button>
+        </div>
+        <div class="toast-body">Данные успешно обновлены!</div>
+      </div>
+
+      <div id="errorToast" class="toast">
+        <div class="toast-header error">
+          <strong>✕ Ошибка!</strong>
+          <button class="toast-close" data-toast-close>&times;</button>
+        </div>
+        <div class="toast-body" id="errorMessage">Произошла ошибка при обновлении данных</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <button class="monaco-btn secondary" data-back-button title="Вернуться назад">
+          <i class="bi bi-chevron-left"></i>
+          <span>Назад</span>
+        </button>
+      </div>
+      <div class="toolbar-right">
+        <span class="badge">{{editorTitle}} / {{namespaceLabel}} / {{nameLabel}}</span>
+        <button class="monaco-btn" id="submit" title="Сохранить (Ctrl+S)">
+          <i class="bi bi-save"></i>
+          <span>Сохранить</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="editor-wrapper">
+      <div id="editor"></div>
+    </div>
+
+    <script>
+      window.CW_CONFIG_EDITOR = {
+        basePath: {{basePathJson}},
+        namespace: {{namespace}},
+        namespacePath: {{namespacePath}},
+        name: {{name}},
+        namePath: {{namePath}},
+        currentYaml: {{currentYaml}},
+        schema: {{schema}},
+        schemaEnabled: {{schemaEnabled}},
+        updatePath: {{updatePath}}
+      };
+    </script>
+    <script src="{{basePath}}/monaco/monaco-editor.js"></script>
+    <script src="{{basePath}}/editor/raw-editor.js"></script>
+  </body>
+</html>

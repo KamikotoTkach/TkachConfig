@@ -13,4 +13,12 @@ public class PaperStarter extends JavaPlugin {
     
     INSTANCE.start();
   }
+  
+  @Override
+  public void onDisable() {
+    if (INSTANCE != null) {
+      INSTANCE.stop();
+      INSTANCE = null;
+    }
+  }
 }
