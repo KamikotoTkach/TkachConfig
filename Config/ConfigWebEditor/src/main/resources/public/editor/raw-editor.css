@@ -95,6 +95,16 @@ body {
   background-color: #464646;
 }
 
+.monaco-btn.danger {
+  background-color: #a1260d;
+  border-color: #a1260d;
+}
+
+.monaco-btn.danger:hover:not(:disabled) {
+  background-color: #c43215;
+  border-color: #c43215;
+}
+
 .monaco-btn i {
   font-size: 14px;
 }

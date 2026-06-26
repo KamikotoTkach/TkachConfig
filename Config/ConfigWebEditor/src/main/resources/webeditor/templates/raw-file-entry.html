@@ -1,0 +1,14 @@
+<div class="list-group-item d-flex align-items-center justify-content-between" data-entry-type="{{type}}" data-entry-path="{{path}}" data-entry-path-url="{{pathUrl}}" data-entry-name="{{name}}">
+  <a href="{{href}}" class="link-dark text-decoration-none flex-grow-1 d-flex align-items-center">
+    <i class="bi {{icon}} me-2"></i>{{name}}
+  </a>
+  <div class="d-flex align-items-center gap-2 ms-2">
+    <small class="text-muted">{{meta}}</small>
+    <button class="btn btn-outline-secondary btn-sm border-0" type="button" data-rename-entry title="Переименовать">
+      <i class="bi bi-pencil-square"></i>
+    </button>
+    <button class="btn btn-outline-danger btn-sm border-0" type="button" data-delete-entry title="Удалить">
+      <i class="bi bi-trash"></i>
+    </button>
+  </div>
+</div>

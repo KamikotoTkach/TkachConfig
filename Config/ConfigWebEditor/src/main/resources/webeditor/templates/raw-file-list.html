@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <title>Raw files</title>
+  </head>
+  <body>
+    <a href="#" class="btn btn-sm btn-light m-3" onclick="history.back()">
+      <i class="bi bi-chevron-left"></i>
+      <span class="ms-1">Назад</span>
+    </a>
+
+    <div class="container mt-4">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <div>
+          <h4 class="mb-1">Raw files</h4>
+          <div class="text-muted small">{{path}}</div>
+        </div>
+        <span class="badge bg-warning text-dark">write</span>
+      </div>
+
+      <div id="rawCreateError" class="alert alert-danger d-none" role="alert"></div>
+      <div id="rawDropZone" class="border border-2 border-secondary rounded p-3 mb-3 text-center text-muted">
+        Перетащите сюда файл для загрузки в открытую папку
+      </div>
+      <div class="row g-2 mb-3">
+        <div class="col-md-6">
+          <form id="rawCreateForm" class="input-group">
+            <input id="rawCreateName" class="form-control" autocomplete="off" placeholder="new-file.yml" />
+            <button class="btn btn-outline-primary" type="submit">
+              <i class="bi bi-file-earmark-plus"></i>
+              <span class="ms-1">Создать файл</span>
+            </button>
+          </form>
+        </div>
+        <div class="col-md-6">
+          <form id="rawCreateDirectoryForm" class="input-group">
+            <input id="rawCreateDirectoryName" class="form-control" autocomplete="off" placeholder="NewDirectory" />
+            <button class="btn btn-outline-secondary" type="submit">
+              <i class="bi bi-folder-plus"></i>
+              <span class="ms-1">Создать папку</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      {{parentButton}}
+
+      <div class="list-group">
+        {{entries}}
+      </div>
+    </div>
+    <script>
+      window.CW_RAW_DIRECTORY = {
+        basePath: {{basePathJson}},
+        directoryPath: {{directoryPath}},
+        directoryPathUrl: {{directoryPathUrl}}
+      };
+    </script>
+    <script src="{{basePath}}/editor/raw-file-list.js"></script>
+  </body>
+</html>

@@ -37,11 +37,12 @@ public class VelocityStarter {
                                                                                  dataDirectory,
                                                                                 logger,
                                                                                 server.getPluginManager()
-                                                                                      .ensurePluginContainer(this)
-                                                                                      .getDescription()
-                                                                                      .getSource()
-                                                                                      .orElseThrow()
-                                                                                       .toFile())));
+                                                                                       .ensurePluginContainer(this)
+                                                                                       .getDescription()
+                                                                                       .getSource()
+                                                                                       .orElseThrow()
+                                                                                        .toFile())),
+                             dataDirectory.getParent());
     INSTANCE.start();
   }
   

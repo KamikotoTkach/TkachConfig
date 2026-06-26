@@ -9,7 +9,8 @@ public class PaperStarter extends JavaPlugin {
   
   @Override
   public void onEnable() {
-    INSTANCE = new WebEditor(new SimpleConfig("config", new PaperL10nPlatform(this, this.getFile())));
+    INSTANCE = new WebEditor(new SimpleConfig("config", new PaperL10nPlatform(this, this.getFile())),
+                             getDataFolder().getParentFile().toPath());
     
     INSTANCE.start();
   }

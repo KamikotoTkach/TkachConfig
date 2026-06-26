@@ -2,6 +2,9 @@ package ru.cwcode.tkach.config.webeditor.view;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.cwcode.tkach.config.webeditor.service.RawFileService.RawDirectoryData;
+import ru.cwcode.tkach.config.webeditor.service.RawFileService.RawFileData;
+import ru.cwcode.tkach.config.webeditor.service.RawFileService.RawFileEntry;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +25,10 @@ public class WebEditorPages {
       )));
     }
     
-    return renderer.render("index.html", Map.of("namespaces", elements.toString()));
+    return renderer.render("index.html", Map.of(
+      "rawFilesUrl", HtmlUtils.escapeAttribute(basePath + "/raw"),
+      "namespaces", elements.toString()
+    ));
   }
   
   public String configListPage(String basePath, String namespace, List<String> configs) {
@@ -68,6 +74,66 @@ public class WebEditorPages {
       "name", toJson(name),
       "namePath", toJson(UrlUtils.path(name))
     ));
+  }
+  
+  public String rawDirectoryPage(String basePath, RawDirectoryData data) {
+    StringBuilder elements = new StringBuilder();
+    for (RawFileEntry entry : data.entries()) {
+      elements.append(renderer.render("raw-file-entry.html", Map.of(
+        "href", HtmlUtils.escapeAttribute(basePath + (entry.directory() ? "/raw/browse/" : "/raw/view/") + UrlUtils.path(entry.path())),
+        "icon", entry.directory() ? "bi-folder-fill text-warning" : "bi-file-earmark-text text-secondary",
+        "name", HtmlUtils.escape(entry.name()),
+        "path", HtmlUtils.escapeAttribute(entry.path()),
+        "pathUrl", HtmlUtils.escapeAttribute(UrlUtils.path(entry.path())),
+        "type", entry.directory() ? "directory" : "file",
+        "meta", HtmlUtils.escape(entry.directory() ? "Папка" : sizeLabel(entry.size()))
+      )));
+    }
+    
+    String parentButton = "";
+    if (data.parentPath() != null) {
+      String parentHref = data.parentPath().isBlank() ? basePath + "/raw" : basePath + "/raw/browse/" + UrlUtils.path(data.parentPath());
+      parentButton = renderer.render("raw-parent-button.html", Map.of(
+        "href", HtmlUtils.escapeAttribute(parentHref)
+      ));
+    }
+    
+    return renderer.render("raw-file-list.html", Map.of(
+      "parentButton", parentButton,
+      "path", HtmlUtils.escape(data.path().isBlank() ? "plugins" : "plugins/" + data.path()),
+      "basePath", HtmlUtils.escapeAttribute(basePath),
+      "basePathJson", toJson(basePath),
+      "directoryPath", toJson(data.path()),
+      "directoryPathUrl", toJson(UrlUtils.path(data.path())),
+      "entries", elements.toString()
+    ));
+  }
+  
+  public String rawFileViewerPage(String basePath, RawFileData data) {
+    return renderer.render("raw-file-viewer.html", Map.ofEntries(
+      entry("title", HtmlUtils.escape("Raw file - " + data.name())),
+      entry("basePath", HtmlUtils.escapeAttribute(basePath)),
+      entry("basePathJson", toJson(basePath)),
+      entry("pathLabel", HtmlUtils.escape("plugins/" + data.path())),
+      entry("path", toJson(data.path())),
+      entry("pathUrl", toJson(UrlUtils.path(data.path()))),
+      entry("name", toJson(data.name())),
+      entry("content", toJson(data.content())),
+      entry("language", toJson(data.language()))
+    ));
+  }
+  
+  private String sizeLabel(long size) {
+    if (size < 0) {
+      return "Файл";
+    }
+    if (size < 1024) {
+      return size + " B";
+    }
+    if (size < 1024 * 1024) {
+      return String.format("%.1f KB", size / 1024.0);
+    }
+    return String.format("%.1f MB", size / 1024.0 / 1024.0);
   }
   
   private String toJson(String value) {
