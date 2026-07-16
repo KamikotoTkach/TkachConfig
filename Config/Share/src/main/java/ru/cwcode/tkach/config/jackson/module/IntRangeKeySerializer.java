@@ -10,6 +10,8 @@ import java.io.IOException;
 public class IntRangeKeySerializer extends JsonSerializer<IntRange> {
     @Override
     public void serialize(IntRange value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        gen.writeFieldName(value.min() + ".." + value.max());
+        gen.writeFieldName(value.min() == value.max()
+            ? Integer.toString(value.min())
+            : value.min() + ".." + value.max());
     }
 }

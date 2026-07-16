@@ -11,11 +11,12 @@ public class IntRangeKeyDeserializer extends KeyDeserializer {
     @Override
     public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException {
         String[] parts = key.split("\\.\\.", 2);
-        if (parts.length != 2) {
-            throw invalidKey(ctxt, key);
-        }
-
         try {
+            if (parts.length == 1) {
+                int value = Integer.parseInt(parts[0]);
+                return new IntRange(value, value);
+            }
+
             return new IntRange(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
         } catch (NumberFormatException e) {
             throw invalidKey(ctxt, key);
@@ -23,6 +24,6 @@ public class IntRangeKeyDeserializer extends KeyDeserializer {
     }
 
     private JsonMappingException invalidKey(DeserializationContext ctxt, String key) {
-        return ctxt.weirdKeyException(IntRange.class, key, "Expected IntRange key in '<min>..<max>' format");
+        return ctxt.weirdKeyException(IntRange.class, key, "Expected IntRange key in '<value>' or '<min>..<max>' format");
     }
 }

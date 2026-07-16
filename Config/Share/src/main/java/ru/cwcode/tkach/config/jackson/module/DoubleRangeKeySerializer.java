@@ -10,6 +10,8 @@ import java.io.IOException;
 public class DoubleRangeKeySerializer extends JsonSerializer<DoubleRange> {
     @Override
     public void serialize(DoubleRange value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        gen.writeFieldName(value.min() + ".." + value.max());
+        gen.writeFieldName(Double.compare(value.min(), value.max()) == 0
+            ? Double.toString(value.min())
+            : value.min() + ".." + value.max());
     }
 }
